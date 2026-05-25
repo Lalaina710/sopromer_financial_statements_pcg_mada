@@ -26,7 +26,7 @@
               priority="100">
 
         <!-- Injecter CSS custom AVANT le contenu de la page -->
-        <xpath expr="//div[@class='page']" position="before">
+        <xpath expr="//div[hasclass('page')]" position="before">
             <style type="text/css">
                 /* ============================================================
                    SOPROMER Financial Statements - Style MEDICAL INTERNATIONAL
@@ -151,7 +151,7 @@
         </xpath>
 
         <!-- En-tete MEDICAL-style : logo + nom societe + infos + date edition -->
-        <xpath expr="//div[@class='page']" position="before">
+        <xpath expr="//div[hasclass('page')]" position="before">
             <div class="sfs-header">
                 <!-- Logo societe -->
                 <div class="sfs-header-logo">
@@ -244,7 +244,7 @@
         </xpath>
 
         <!-- Override titre <h3> : remplacer par titre MEDICAL-style avec date_to -->
-        <xpath expr="//div[@class='page']/h3" position="replace">
+        <xpath expr="//div[hasclass('page')]/h3" position="replace">
             <div class="sfs-report-title">
                 <t t-esc="o.name"/>
                 <t t-if="o.date_to">
