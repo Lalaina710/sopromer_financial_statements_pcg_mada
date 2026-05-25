@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 SOPROMER
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+
+     TABLEAU FLUX DE TRESORERIE - METHODE INDIRECTE - PCG 2005 Madagascar
+     Cascade: Flux activite (A) + Flux investissement (B) + Flux financement (C)
+              = Variation tresorerie de la periode
+              + Tresorerie ouverture = Tresorerie cloture
+
+     Convention:
+       Resultat net : -balp[12%] ou via cross-report (utilise -balp ici pour autonomie)
+       Variations bilan : (bale - bali) sur compte concerne
+         Stocks/Creances : augmentation = emploi => signe -
+         Dettes : augmentation = ressource => signe +
+       Amortissements : retraitement ajoute au resultat (charge non decaissee)
+-->
+<odoo noupdate="1">
+
+    <record id="mis_report_tft" model="mis.report">
+        <field name="name">TABLEAU FLUX DE TRESORERIE</field>
+        <field name="move_lines_source" ref="account.model_account_move_line"/>
+    </record>
+
+    <!-- === FLUX ACTIVITE (A) === -->
+    <record id="kpi_tft_010_section_a" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_section_a</field>
+        <field name="description">Flux de tresorerie lies a l activite</field>
+        <field name="sequence">10</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_tft_010" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_010_section_a"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <record id="kpi_tft_020_rn" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_rn</field>
+        <field name="description">Resultat net de l exercice</field>
+        <field name="sequence">20</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_020" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_020_rn"/>
+        <field name="name">-balp[6%] - balp[7%]</field>
+    </record>
+
+    <record id="kpi_tft_030_amort" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_amort</field>
+        <field name="description">Amortissements et provisions</field>
+        <field name="sequence">30</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_030" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_030_amort"/>
+        <field name="name">balp[681%] + balp[685%] + balp[686%]</field>
+    </record>
+
+    <record id="kpi_tft_040_regul_amort" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_regul_amort</field>
+        <field name="description">Regularisation amortissement</field>
+        <field name="sequence">40</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_040" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_040_regul_amort"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <record id="kpi_tft_050_correc_err" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_correc_err</field>
+        <field name="description">Correction d erreur</field>
+        <field name="sequence">50</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_050" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_050_correc_err"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <record id="kpi_tft_060_var_imp_diff" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_var_imp_diff</field>
+        <field name="description">Variation des impots differes</field>
+        <field name="sequence">60</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_060" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_060_var_imp_diff"/>
+        <field name="name">-balp[693%]</field>
+    </record>
+
+    <record id="kpi_tft_070_var_stocks" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_var_stocks</field>
+        <field name="description">Variation des stocks</field>
+        <field name="sequence">70</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_070" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_070_var_stocks"/>
+        <field name="name">-(bale[3%] - bali[3%])</field>
+    </record>
+
+    <record id="kpi_tft_080_var_clients" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_var_clients</field>
+        <field name="description">Variation des clients et autres creances</field>
+        <field name="sequence">80</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_080" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_080_var_clients"/>
+        <field name="name">-(bale[411%] - bali[411%]) - (bale[416%] - bali[416%]) - (bale[467%] - bali[467%])</field>
+    </record>
+
+    <record id="kpi_tft_090_var_four" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_var_four</field>
+        <field name="description">Variation des fournisseurs et autres dettes</field>
+        <field name="sequence">90</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_090" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_090_var_four"/>
+        <field name="name">(bale[401%] - bali[401%]) + (bale[403%] - bali[403%]) + (bale[408%] - bali[408%]) + (bale[419%] - bali[419%])</field>
+    </record>
+
+    <!-- TOTAL FLUX ACTIVITE (A) -->
+    <record id="kpi_tft_100_total_a" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_total_a</field>
+        <field name="description">(A) Flux de tresorerie generes a l activite</field>
+        <field name="sequence">100</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_result"/>
+    </record>
+    <record id="kpi_expr_tft_100" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_100_total_a"/>
+        <field name="name">tft_rn + tft_amort + tft_regul_amort + tft_correc_err + tft_var_imp_diff + tft_var_stocks + tft_var_clients + tft_var_four</field>
+    </record>
+
+    <!-- === FLUX INVESTISSEMENT (B) === -->
+    <record id="kpi_tft_200_section_b" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_section_b</field>
+        <field name="description">Flux de tresorerie lies aux operations d investissement</field>
+        <field name="sequence">200</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_tft_200" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_200_section_b"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <record id="kpi_tft_210_dec_immo" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_dec_immo</field>
+        <field name="description">Decaissements sur acquisitions d immobilisations</field>
+        <field name="sequence">210</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_210" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_210_dec_immo"/>
+        <field name="name">-(bale[20%] - bali[20%]) - (bale[21%] - bali[21%]) - (bale[23%] - bali[23%])</field>
+    </record>
+
+    <record id="kpi_tft_220_cession_immo" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_cession_immo</field>
+        <field name="description">Cession immobilisations</field>
+        <field name="sequence">220</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_220" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_220_cession_immo"/>
+        <field name="name">-balp[775%] + balp[675%]</field>
+    </record>
+
+    <record id="kpi_tft_230_mobilier_log" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_mobilier_log</field>
+        <field name="description">Mobilier de logement</field>
+        <field name="sequence">230</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_230" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_230_mobilier_log"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <record id="kpi_tft_240_dec_immo_fin" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_dec_immo_fin</field>
+        <field name="description">Decaissements sur acquisitions Immobilisations Financieres</field>
+        <field name="sequence">240</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_240" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_240_dec_immo_fin"/>
+        <field name="name">-(bale[26%] - bali[26%]) - (bale[27%] - bali[27%])</field>
+    </record>
+
+    <!-- TOTAL FLUX INVESTISSEMENT (B) -->
+    <record id="kpi_tft_250_total_b" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_total_b</field>
+        <field name="description">(B) Flux de tresorerie lies aux operations d investissement</field>
+        <field name="sequence">250</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_result"/>
+    </record>
+    <record id="kpi_expr_tft_250" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_250_total_b"/>
+        <field name="name">tft_dec_immo + tft_cession_immo + tft_mobilier_log + tft_dec_immo_fin</field>
+    </record>
+
+    <!-- === FLUX FINANCEMENT (C) === -->
+    <record id="kpi_tft_300_section_c" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_section_c</field>
+        <field name="description">Flux de tresorerie lies aux activites de financement</field>
+        <field name="sequence">300</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_tft_300" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_300_section_c"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <record id="kpi_tft_310_dividendes" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_dividendes</field>
+        <field name="description">Dividendes verses aux actionnaires</field>
+        <field name="sequence">310</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_310" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_310_dividendes"/>
+        <field name="name">-(bale[457%] - bali[457%])</field>
+    </record>
+
+    <record id="kpi_tft_320_augm_capital" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_augm_capital</field>
+        <field name="description">Augmentation de capital en numeraire</field>
+        <field name="sequence">320</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_320" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_320_augm_capital"/>
+        <field name="name">-(bale[101%] - bali[101%])</field>
+    </record>
+
+    <record id="kpi_tft_330_asm" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_asm</field>
+        <field name="description">ASM</field>
+        <field name="sequence">330</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_330" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_330_asm"/>
+        <field name="name">-(bale[5198%] - bali[5198%])</field>
+    </record>
+
+    <record id="kpi_tft_340_emp_ct" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_emp_ct</field>
+        <field name="description">Emprunts et dettes financieres CT</field>
+        <field name="sequence">340</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_340" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_340_emp_ct"/>
+        <field name="name">-(bale[519%] - bali[519%])</field>
+    </record>
+
+    <!-- TOTAL FLUX FINANCEMENT (C) -->
+    <record id="kpi_tft_350_total_c" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_total_c</field>
+        <field name="description">(C) Flux de tresorerie lies aux operations de financement</field>
+        <field name="sequence">350</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_result"/>
+    </record>
+    <record id="kpi_expr_tft_350" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_350_total_c"/>
+        <field name="name">tft_dividendes + tft_augm_capital + tft_asm + tft_emp_ct</field>
+    </record>
+
+    <!-- === VARIATION TRESORERIE === -->
+    <record id="kpi_tft_400_var_periode" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_var_periode</field>
+        <field name="description">Variation de tresorerie de la periode (A+B+C)</field>
+        <field name="sequence">400</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_result"/>
+    </record>
+    <record id="kpi_expr_tft_400" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_400_var_periode"/>
+        <field name="name">tft_total_a + tft_total_b + tft_total_c</field>
+    </record>
+
+    <record id="kpi_tft_410_treso_ouv" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_treso_ouv</field>
+        <field name="description">Tresorerie d ouverture</field>
+        <field name="sequence">410</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_410" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_410_treso_ouv"/>
+        <field name="name">bali[5%]</field>
+    </record>
+
+    <record id="kpi_tft_420_treso_clot" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_treso_clot</field>
+        <field name="description">Tresorerie de cloture</field>
+        <field name="sequence">420</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_420" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_420_treso_clot"/>
+        <field name="name">bale[5%]</field>
+    </record>
+
+    <record id="kpi_tft_430_inc_devises" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_inc_devises</field>
+        <field name="description">Incidence des variations de cours des devises</field>
+        <field name="sequence">430</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tft_430" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_430_inc_devises"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <!-- CONTROLE: Variation tresorerie = cloture - ouverture -->
+    <record id="kpi_tft_999_var_controle" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_tft"/>
+        <field name="name">tft_var_controle</field>
+        <field name="description">Variation de tresorerie (controle = cloture - ouverture)</field>
+        <field name="sequence">999</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_final"/>
+    </record>
+    <record id="kpi_expr_tft_999" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tft_999_var_controle"/>
+        <field name="name">tft_treso_clot - tft_treso_ouv</field>
+    </record>
+
+</odoo>

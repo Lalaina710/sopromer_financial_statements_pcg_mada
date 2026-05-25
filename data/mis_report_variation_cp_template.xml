@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 SOPROMER
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+
+     ETAT DE VARIATION DES CAPITAUX PROPRES - PCG 2005 Madagascar
+
+     LIMITATION: mis_builder ne supporte pas le format pivot natif (cols = composantes
+     CP × lignes = mouvements). Version simplifiee : on liste les 4 composantes en
+     KPIs separes + ligne TOTAL. Comparaison via les 2 periodes (cols = annees).
+
+     Format affiche:
+       Periode N | Periode N-1
+       Capital Social | xxx | xxx
+       Prime + Reserves | xxx | xxx
+       Ecart d'evaluation | xxx | xxx
+       Resultat + RAN | xxx | xxx
+       TOTAL CAPITAUX PROPRES | xxx | xxx
+
+     Pour le vrai format pivot avec mouvements (changement methode, affectation,
+     resultat exercice...), implementer un module custom dedie (hors scope mis_builder).
+-->
+<odoo noupdate="1">
+
+    <record id="mis_report_variation_cp" model="mis.report">
+        <field name="name">VARIATION CAPITAUX PROPRES</field>
+        <field name="move_lines_source" ref="account.model_account_move_line"/>
+    </record>
+
+    <!-- Note explicative en tete -->
+    <record id="kpi_vcp_005_note" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_variation_cp"/>
+        <field name="name">vcp_note</field>
+        <field name="description">Composante des capitaux propres a date arretee</field>
+        <field name="sequence">5</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_vcp_005" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_vcp_005_note"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <!-- Colonne 1 - Capital Social -->
+    <record id="kpi_vcp_010_capital" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_variation_cp"/>
+        <field name="name">vcp_capital</field>
+        <field name="description">Capital Social</field>
+        <field name="sequence">10</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_vcp_010" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_vcp_010_capital"/>
+        <field name="name">-bale[101%]</field>
+    </record>
+
+    <!-- Colonne 2 - Primes et Reserves -->
+    <record id="kpi_vcp_020_primes_reserves" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_variation_cp"/>
+        <field name="name">vcp_primes_reserves</field>
+        <field name="description">Prime et reserves</field>
+        <field name="sequence">20</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_vcp_020" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_vcp_020_primes_reserves"/>
+        <field name="name">-bale[103%] - bale[104%] - bale[106%] - bale[1061%]</field>
+    </record>
+
+    <!-- Colonne 3 - Ecart d'evaluation -->
+    <record id="kpi_vcp_030_ecart_eval" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_variation_cp"/>
+        <field name="name">vcp_ecart_eval</field>
+        <field name="description">Ecart d evaluation</field>
+        <field name="sequence">30</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_vcp_030" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_vcp_030_ecart_eval"/>
+        <field name="name">-bale[105%]</field>
+    </record>
+
+    <!-- Colonne 4 - Resultat + RAN -->
+    <record id="kpi_vcp_040_resultat_ran" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_variation_cp"/>
+        <field name="name">vcp_resultat_ran</field>
+        <field name="description">Resultat et Report a Nouveau</field>
+        <field name="sequence">40</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_vcp_040" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_vcp_040_resultat_ran"/>
+        <field name="name">-bale[11%] - bale[12%] - bale[129%]</field>
+    </record>
+
+    <!-- TOTAL Capitaux Propres -->
+    <record id="kpi_vcp_999_total" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_variation_cp"/>
+        <field name="name">vcp_total</field>
+        <field name="description">TOTAL CAPITAUX PROPRES</field>
+        <field name="sequence">999</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_final"/>
+    </record>
+    <record id="kpi_expr_vcp_999" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_vcp_999_total"/>
+        <field name="name">vcp_capital + vcp_primes_reserves + vcp_ecart_eval + vcp_resultat_ran</field>
+    </record>
+
+</odoo>
