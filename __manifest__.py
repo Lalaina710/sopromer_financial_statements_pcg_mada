@@ -2,10 +2,10 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 {
     "name": "SOPROMER Financial Statements - PCG Madagascar 2005",
-    "version": "18.0.1.0.0",
+    "version": "18.0.2.0.0",
     "category": "Accounting/Reporting",
     "summary": "Etats financiers configurables PCG 2005 Madagascar via OCA mis_builder "
-               "(Compte de Resultat par Nature - Phase A)",
+               "(Compte de Resultat par Nature - Phase B1 : QWeb MEDICAL-style)",
     "description": """
 SOPROMER Financial Statements - PCG Madagascar 2005
 ====================================================

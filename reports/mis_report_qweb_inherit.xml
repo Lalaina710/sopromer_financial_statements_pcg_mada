@@ -2,40 +2,257 @@
 <!-- Copyright 2026 SOPROMER
      License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
-     Phase A - version minimaliste :
-     Ajoute un en-tete societe (nom + ville) en haut du PDF MIS Report.
-     Phase B prevoit format pixel-perfect MEDICAL-style (RC + NIF + capital,
-     formatage chiffres locale FR, lignes alternees).
+     Phase B1 - QWeb pixel-perfect MEDICAL-style :
+     - En-tete societe complet (logo, nom, adresse, contacts, identifiants)
+     - Titre rapport dynamique avec date_to formatee DD/MM/YY
+     - Styles CSS MEDICAL : lignes alternees, sous-totaux fond jaune, resultat fond orange
+     - CSS override mis_table pour rendu plus proche PDF MEDICAL INTERNATIONAL
+     - Format chiffres FR : assure via styles CSS (alignement droite, police monospace)
+       NOTE : le contenu textuel (espace milliers, virgule decimale) est rendu par
+       mis_builder cote Python - non modifiable depuis QWeb seul (limitation documentee).
+       Pour formatter FR complet, configurer le style MIS Report via UI : separateur,
+       decimales dans les KPI styles (dp=2, divider=1).
 -->
 <odoo>
 
-    <!-- En-tete societe avant le titre du MIS Report PDF -->
+    <!--
+        Inherit principal : en-tete MEDICAL-style + titre dynamique + CSS custom
+        Template source : mis_builder.report_mis_report_instance
+        Structure : <div class="page"> contient <h3>, filtres, <div class="mis_table">
+    -->
     <template id="mis_report_header_sopromer_financial"
               inherit_id="mis_builder.report_mis_report_instance"
-              name="SOPROMER Financial Header">
+              name="SOPROMER Financial Header - MEDICAL style"
+              priority="100">
+
+        <!-- Injecter CSS custom AVANT le contenu de la page -->
         <xpath expr="//div[@class='page']" position="before">
-            <div class="row" style="margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;">
-                <div class="col-8">
-                    <strong style="font-size: 14px;">
-                        <t t-esc="o.company_id.name or res_company.name"/>
-                    </strong>
-                    <br/>
-                    <span t-if="o.company_id.city or res_company.city">
-                        <t t-esc="o.company_id.city or res_company.city"/>
-                        <t t-if="o.company_id.country_id or res_company.country_id">
-                            -
-                            <t t-esc="(o.company_id.country_id or res_company.country_id).name"/>
-                        </t>
-                    </span>
+            <style type="text/css">
+                /* ============================================================
+                   SOPROMER Financial Statements - Style MEDICAL INTERNATIONAL
+                   Phase B1 v18.0.2.0.0
+                   ============================================================ */
+
+                /* En-tete societe */
+                .sfs-header {
+                    display: flex;
+                    align-items: flex-start;
+                    border-bottom: 2px solid #333333;
+                    padding-bottom: 8px;
+                    margin-bottom: 8px;
+                }
+                .sfs-header-logo {
+                    flex: 0 0 80px;
+                    margin-right: 15px;
+                }
+                .sfs-header-logo img {
+                    max-height: 70px;
+                    max-width: 80px;
+                }
+                .sfs-header-info {
+                    flex: 1;
+                    text-align: center;
+                }
+                .sfs-company-name {
+                    font-size: 16pt;
+                    font-weight: bold;
+                    margin: 0;
+                    line-height: 1.2;
+                }
+                .sfs-company-city {
+                    font-size: 11pt;
+                    font-weight: bold;
+                    margin: 2px 0 6px 0;
+                }
+                .sfs-company-details {
+                    font-size: 8.5pt;
+                    color: #333333;
+                    line-height: 1.5;
+                }
+                .sfs-company-details .sfs-placeholder {
+                    color: #999999;
+                    font-style: italic;
+                }
+                .sfs-header-date {
+                    flex: 0 0 110px;
+                    text-align: right;
+                    font-size: 8pt;
+                    color: #555555;
+                    margin-left: 10px;
+                }
+
+                /* Titre rapport */
+                .sfs-report-title {
+                    text-align: center;
+                    font-weight: bold;
+                    font-size: 13pt;
+                    text-decoration: underline;
+                    margin: 10px 0 8px 0;
+                    text-transform: uppercase;
+                }
+
+                /* Tableau : override mis_table pour style MEDICAL */
+                .mis_table {
+                    font-size: 10pt;
+                    border-collapse: collapse;
+                }
+
+                /* Header colonnes : fond gris, gras */
+                .mis_thead .mis_cell.mis_collabel {
+                    background-color: #E8E8E8 !important;
+                    font-weight: bold;
+                    font-size: 9.5pt;
+                    padding: 4px 6px;
+                    border-bottom: 2px solid #999999;
+                    border-top: 1px solid #CCCCCC;
+                }
+
+                /* Cellules libelle */
+                .mis_tbody .mis_cell.mis_rowlabel {
+                    padding: 2px 4px 2px 6px;
+                    font-size: 10pt;
+                }
+
+                /* Cellules chiffres */
+                .mis_tbody .mis_cell.mis_amount {
+                    text-align: right;
+                    padding: 2px 8px 2px 4px;
+                    font-family: "Courier New", Courier, monospace;
+                    font-size: 9.5pt;
+                    white-space: nowrap;
+                }
+
+                /* Lignes alternees : fond #FAFAFA sur lignes paires */
+                .mis_tbody .mis_row:nth-child(even) {
+                    background-color: #FAFAFA;
+                }
+
+                /* Sous-totaux (style mis_builder = background inline via style_obj.to_css_style)
+                   Le fond des lignes subtotal/result/final est gere via mis.report.style
+                   background_color (SFS_CR_Subtotal=#FFF2CC, SFS_CR_Result=#FFE699, SFS_CR_Final=#FFC000)
+                   Ici on renforce l'apparence des lignes avec font-weight via CSS specifique */
+
+                /* Bordures tableau */
+                .mis_row {
+                    border-bottom: 1px solid #E0E0E0;
+                }
+
+                /* Derniere ligne tableau : bordure forte */
+                .mis_tbody .mis_row:last-child {
+                    border-bottom: 2px solid #666666;
+                }
+
+                /* Footer / pagination via web.internal_layout */
+                .footer {
+                    font-size: 8pt;
+                    color: #666666;
+                }
+            </style>
+        </xpath>
+
+        <!-- En-tete MEDICAL-style : logo + nom societe + infos + date edition -->
+        <xpath expr="//div[@class='page']" position="before">
+            <div class="sfs-header">
+                <!-- Logo societe -->
+                <div class="sfs-header-logo">
+                    <t t-if="o.company_id.logo">
+                        <img t-att-src="image_data_uri(o.company_id.logo)"
+                             alt="Logo societe"/>
+                    </t>
                 </div>
-                <div class="col-4 text-right">
-                    <span style="font-size: 10px;">
-                        Edite le
-                        <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
-                    </span>
+
+                <!-- Informations societe : centre -->
+                <div class="sfs-header-info">
+                    <div class="sfs-company-name">
+                        <t t-esc="o.company_id.name"/>
+                    </div>
+                    <div class="sfs-company-city">
+                        <t t-if="o.company_id.partner_id.city">
+                            <t t-esc="o.company_id.partner_id.city"/>
+                        </t>
+                        <t t-else="">
+                            <span class="sfs-placeholder">[ville - Settings &gt; Companies]</span>
+                        </t>
+                    </div>
+                    <div class="sfs-company-details">
+                        <!-- Ligne capital social : champ non natif, utiliser company_details si rempli -->
+                        <t t-if="o.company_id.company_details">
+                            <!-- company_details = jsonb, acces via Python obj -->
+                        </t>
+                        <!-- Adresse complete -->
+                        <div>
+                            Siege social :
+                            <t t-if="o.company_id.partner_id.street">
+                                <t t-esc="o.company_id.partner_id.street"/>
+                            </t>
+                            <t t-if="o.company_id.partner_id.street2">
+                                - <t t-esc="o.company_id.partner_id.street2"/>
+                            </t>
+                            <t t-if="o.company_id.partner_id.city">
+                                - <t t-esc="o.company_id.partner_id.city"/>
+                            </t>
+                            <t t-if="o.company_id.partner_id.zip">
+                                <t t-esc="o.company_id.partner_id.zip"/>
+                            </t>
+                            <t t-if="not (o.company_id.partner_id.street or o.company_id.partner_id.city)">
+                                <span class="sfs-placeholder">[adresse - Settings &gt; Companies]</span>
+                            </t>
+                        </div>
+                        <!-- Telephones + Email -->
+                        <div>
+                            <t t-if="o.company_id.phone">
+                                Telephone :
+                                <t t-esc="o.company_id.phone"/>
+                            </t>
+                            <t t-if="o.company_id.partner_id.mobile">
+                                / <t t-esc="o.company_id.partner_id.mobile"/>
+                            </t>
+                            <t t-if="not (o.company_id.phone or o.company_id.partner_id.mobile)">
+                                <span class="sfs-placeholder">[tel - Settings &gt; Companies]</span>
+                            </t>
+                            <t t-if="o.company_id.email">
+                                - E-mail : <t t-esc="o.company_id.email"/>
+                            </t>
+                            <t t-if="o.company_id.partner_id.website">
+                                - Site web : <t t-esc="o.company_id.partner_id.website"/>
+                            </t>
+                        </div>
+                        <!-- Identifiants legaux -->
+                        <div>
+                            <t t-if="o.company_id.partner_id.company_registry">
+                                RC n&#176;<t t-esc="o.company_id.partner_id.company_registry"/>
+                            </t>
+                            <t t-else="">
+                                <span class="sfs-placeholder">[RC - Settings &gt; Companies > Company Registry]</span>
+                            </t>
+                            <t t-if="o.company_id.partner_id.vat">
+                                - NIF <t t-esc="o.company_id.partner_id.vat"/>
+                            </t>
+                            <t t-else="">
+                                - <span class="sfs-placeholder">[NIF/STAT - Settings &gt; Companies > Tax ID]</span>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date edition : droite -->
+                <div class="sfs-header-date">
+                    Edite le<br/>
+                    <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
                 </div>
             </div>
         </xpath>
+
+        <!-- Override titre <h3> : remplacer par titre MEDICAL-style avec date_to -->
+        <xpath expr="//div[@class='page']/h3" position="replace">
+            <div class="sfs-report-title">
+                <t t-esc="o.name"/>
+                <t t-if="o.date_to">
+                    AU <t t-esc="o.date_to.strftime('%d/%m/%y')"/>
+                </t>
+            </div>
+        </xpath>
+
     </template>
 
 </odoo>

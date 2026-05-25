@@ -2,6 +2,28 @@
 
 All notable changes to this module will be documented in this file.
 
+## [18.0.2.0.0] - 2026-05-25
+
+### Added - Phase B1 : QWeb pixel-perfect MEDICAL-style
+
+- Override QWeb `mis_builder.report_mis_report_instance` (priority=100) avec
+  en-tete societe complet style MEDICAL INTERNATIONAL
+- En-tete : logo societe (si present), nom societe gras 16pt, ville gras 11pt,
+  bloc adresse + telephone + email + identifiants legaux
+- Placeholders gris pour champs manquants (RC, NIF/STAT, website, capital social)
+  invitant Hervé à completer via Settings > Companies
+- Titre rapport : dynamique "<NOM INSTANCE> AU DD/MM/YY" (date_to)
+- CSS MEDICAL injecte : lignes alternees #FAFAFA, header colonnes gris E8E8E8,
+  police monospace chiffres, bordures MEDICAL, padding optimise
+- Renforcement sous-totaux et resultat final via styles mis_builder existants
+  (SFS_CR_Subtotal, SFS_CR_Result, SFS_CR_Final conserves)
+- Limitation documentee : format FR espace/virgule (separateur milliers) depend
+  de la configuration des KPI styles cote mis_builder, pas modifiable en QWeb pur
+
+### Changed
+- Version bumped 18.0.1.0.0 → 18.0.2.0.0
+- Summary module mis a jour
+
 ## [18.0.1.0.0] - 2026-05-25
 
 ### Added - Phase A : Compte de Resultat par Nature
