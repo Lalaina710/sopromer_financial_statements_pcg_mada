@@ -2,6 +2,44 @@
 
 All notable changes to this module will be documented in this file.
 
+## [18.0.4.0.0] - 2026-05-25
+
+### Changed - Vague 1 : Periodes dynamiques + sous-titres en haut de section
+
+- **Periodes dynamiques** : remplacement des dates hardcodees (2026-01-01 ->
+  2026-12-31, 2025-01-01 -> 2025-12-31) par mode `relative` type `y` :
+  - Periode 1 "Exercice courant" : offset=0 (annee du pivot_date = today)
+  - Periode 2 "Exercice N-1" : offset=-1
+  - Suppression date_from/date_to de l'instance, activation comparison_mode=True
+  - Effet : le rapport se cale automatiquement sur l'annee courante chaque
+    annee sans intervention manuelle.
+- **Sous-titres en haut de section** : restructuration cascade KPIs pour
+  matcher visuel PDF MEDICAL INTERNATIONAL. Headers (MARGE COMMERCIALE,
+  I - PRODUCTION DE L'EXERCICE, II - CONSO INTERMEDIAIRES, V - RESULTAT
+  OPERATIONNEL, VI - RESULTAT FINANCIER, VII - RAI, VIII - RNAO, RESULTAT
+  EXTRAORDINAIRE) deplaces AU DESSUS de leurs lignes de detail :
+  ```
+  MARGE COMMERCIALE :          [valeur calculee]
+    Ventes de marchandises     [detail]
+    Cout d'achat               [detail]
+    Variation de Stocks        [detail]
+  I - PRODUCTION DE L EXERCICE [valeur calculee]
+    Production vendue          [detail]
+    Production stockee         [detail]
+  ...
+  ```
+- **Forward-reference** : exploite le mecanisme natif mis_builder
+  `compute_queue` + `recompute_queue` (cf models/mis_report.py) qui retry
+  les KPIs avec NameError au pass suivant. Permet d'afficher le sous-total
+  AVANT ses composantes en sequence.
+- Sequences KPI renumerotees : 10, 20, ..., 300 (par pas de 10) reflechies
+  pour ordre visuel cascade.
+
+### Validation
+- Periodes : pivot_date=today => 2026 + 2025
+- Forward-ref : NameError au 1er pass => recompute_queue => OK 2eme pass
+- Marge commerciale, I, II, III, V, VI, VII, VIII en haut de chaque section
+
 ## [18.0.3.0.0] - 2026-05-25
 
 ### Fixed - Phase B1.1 : bugs rendu PDF (suite review Herve)

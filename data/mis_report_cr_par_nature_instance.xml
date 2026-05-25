@@ -2,10 +2,11 @@
 <!-- Copyright 2026 SOPROMER
      License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
-     Instance pre-configuree avec 2 colonnes (exercice N + N-1)
-     v18.0.3.0.0 : nom instance sans date (le QWeb ajoute "AU date_to")
-                   periodes : Exercice 2026 (data disponible) + 2025 (N-1)
-     L'utilisateur peut ajuster dates / periodes via UI MIS Reports
+     Instance pre-configuree dynamique (Exercice courant + N-1 auto)
+     v18.0.4.0.0 : periodes mode=relative type=y, comparison_mode=True
+                   pivot_date par defaut = today donc offset 0 => exercice courant
+                   offset -1 => exercice precedent
+                   plus de dates hardcodees, change d'annee automatiquement
 -->
 <odoo noupdate="1">
 
@@ -14,42 +15,40 @@
         <field name="report_id" ref="mis_report_cr_par_nature"/>
         <field name="company_id" ref="base.main_company"/>
         <field name="target_move">posted</field>
-        <field name="date_from">2026-01-01</field>
-        <field name="date_to">2026-12-31</field>
         <field name="multi_company" eval="False"/>
         <field name="temporary" eval="False"/>
         <field name="widget_show_filters" eval="True"/>
         <field name="display_columns_description" eval="True"/>
+        <!-- comparison_mode = True active la gestion des periodes relatives
+             Sans cela, mis_builder ecrase date_from/date_to des periodes
+             avec date_from/date_to de l'instance (mode mono-periode) -->
+        <field name="comparison_mode" eval="True"/>
     </record>
 
-    <!-- Periode 1 : Exercice 2026 YTD -->
+    <!-- Periode 1 : Exercice courant (offset 0 par rapport au pivot_date = today) -->
     <record id="mis_report_period_2026" model="mis.report.instance.period">
         <field name="report_instance_id" ref="mis_report_instance_cr_nature"/>
-        <field name="name">Exercice 2026 YTD</field>
+        <field name="name">Exercice courant</field>
         <field name="sequence">10</field>
-        <field name="mode">fix</field>
-        <field name="type">date_range</field>
+        <field name="mode">relative</field>
+        <field name="type">y</field>
         <field name="source">actuals</field>
-        <field name="manual_date_from">2026-01-01</field>
-        <field name="manual_date_to">2026-12-31</field>
-        <field name="normalize_factor">1</field>
-        <field name="offset">-1</field>
+        <field name="offset">0</field>
         <field name="duration">1</field>
+        <field name="normalize_factor">1</field>
     </record>
 
-    <!-- Periode 2 : Exercice 2025 (N-1) -->
+    <!-- Periode 2 : Exercice N-1 (offset -1) -->
     <record id="mis_report_period_2025" model="mis.report.instance.period">
         <field name="report_instance_id" ref="mis_report_instance_cr_nature"/>
-        <field name="name">Exercice 2025</field>
+        <field name="name">Exercice N-1</field>
         <field name="sequence">20</field>
-        <field name="mode">fix</field>
-        <field name="type">date_range</field>
+        <field name="mode">relative</field>
+        <field name="type">y</field>
         <field name="source">actuals</field>
-        <field name="manual_date_from">2025-01-01</field>
-        <field name="manual_date_to">2025-12-31</field>
-        <field name="normalize_factor">1</field>
         <field name="offset">-1</field>
         <field name="duration">1</field>
+        <field name="normalize_factor">1</field>
     </record>
 
 </odoo>
