@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+*.egg-info/
+.tox/
+.coverage
+htmlcov/

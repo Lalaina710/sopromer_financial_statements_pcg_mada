@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 SOPROMER
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+
+     Compte de Resultat par Nature - PCG 2005 Madagascar
+     Cascade officielle en 8 etapes (Marge Commerciale -> Resultat Net)
+     30 KPIs - source : balp[] (balance posted only)
+-->
+<odoo noupdate="1">
+
+    <!-- Template principal -->
+    <record id="mis_report_cr_par_nature" model="mis.report">
+        <field name="name">COMPTE DE RESULTAT PAR NATURE</field>
+        <field name="move_lines_source" ref="account.model_account_move_line"/>
+    </record>
+
+    <!-- ============================================ -->
+    <!-- KPIs : 30 lignes en cascade PCG Madagascar  -->
+    <!-- ============================================ -->
+
+    <!-- I. MARGE COMMERCIALE -->
+    <record id="kpi_cr_010_ventes_march" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">ventes_march</field>
+        <field name="description">Ventes de marchandises</field>
+        <field name="sequence">10</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_010" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_010_ventes_march"/>
+        <field name="name">balp[707%] + balp[702%]</field>
+    </record>
+
+    <record id="kpi_cr_020_moins_achats" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">moins_achats</field>
+        <field name="description">Cout d achat des marchandises</field>
+        <field name="sequence">20</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_020" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_020_moins_achats"/>
+        <field name="name">-balp[601%] - balp[607%]</field>
+    </record>
+
+    <record id="kpi_cr_030_moins_var_stocks" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">moins_var_stocks</field>
+        <field name="description">Variation de Stocks</field>
+        <field name="sequence">30</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_030" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_030_moins_var_stocks"/>
+        <field name="name">-balp[6031%]</field>
+    </record>
+
+    <record id="kpi_cr_040_marge_commerciale" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">marge_commerciale</field>
+        <field name="description">MARGE COMMERCIALE</field>
+        <field name="sequence">40</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_040" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_040_marge_commerciale"/>
+        <field name="name">ventes_march + moins_achats + moins_var_stocks</field>
+    </record>
+
+    <!-- I. PRODUCTION DE L'EXERCICE -->
+    <record id="kpi_cr_050_prod_vendue" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">prod_vendue</field>
+        <field name="description">Production vendue</field>
+        <field name="sequence">50</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_050" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_050_prod_vendue"/>
+        <field name="name">balp[706%]</field>
+    </record>
+
+    <record id="kpi_cr_060_prod_stockee" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">prod_stockee</field>
+        <field name="description">Production stockee</field>
+        <field name="sequence">60</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_060" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_060_prod_stockee"/>
+        <field name="name">balp[713%]</field>
+    </record>
+
+    <record id="kpi_cr_070_prod_exercice" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">prod_exercice</field>
+        <field name="description">I - PRODUCTION DE L EXERCICE</field>
+        <field name="sequence">70</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_070" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_070_prod_exercice"/>
+        <field name="name">prod_vendue + prod_stockee</field>
+    </record>
+
+    <!-- II. CONSOMMATIONS INTERMEDIAIRES -->
+    <record id="kpi_cr_080_autres_achats" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">autres_achats</field>
+        <field name="description">Autres achats et Fournitures</field>
+        <field name="sequence">80</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_080" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_080_autres_achats"/>
+        <field name="name">-balp[602%] - balp[606%]</field>
+    </record>
+
+    <record id="kpi_cr_090_charges_ext" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">charges_ext</field>
+        <field name="description">Charges Externes</field>
+        <field name="sequence">90</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_090" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_090_charges_ext"/>
+        <field name="name">-balp[61%] - balp[62%]</field>
+    </record>
+
+    <record id="kpi_cr_100_conso_inter" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">conso_inter</field>
+        <field name="description">II - CONSOMMATIONS INTERMEDIAIRES</field>
+        <field name="sequence">100</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_100" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_100_conso_inter"/>
+        <field name="name">autres_achats + charges_ext</field>
+    </record>
+
+    <!-- III. VALEUR AJOUTEE -->
+    <record id="kpi_cr_110_valeur_ajoutee" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">valeur_ajoutee</field>
+        <field name="description">III - VALEUR AJOUTEE</field>
+        <field name="sequence">110</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_result"/>
+    </record>
+    <record id="kpi_expr_110" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_110_valeur_ajoutee"/>
+        <field name="name">marge_commerciale + prod_exercice + conso_inter</field>
+    </record>
+
+    <record id="kpi_cr_120_impots_taxes" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">impots_taxes</field>
+        <field name="description">Impots et Taxes</field>
+        <field name="sequence">120</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_120" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_120_impots_taxes"/>
+        <field name="name">-balp[63%]</field>
+    </record>
+
+    <record id="kpi_cr_130_charges_pers" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">charges_pers</field>
+        <field name="description">Charges de Personnel</field>
+        <field name="sequence">130</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_130" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_130_charges_pers"/>
+        <field name="name">-balp[64%]</field>
+    </record>
+
+    <!-- IV. EBE -->
+    <record id="kpi_cr_140_ebe" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">ebe</field>
+        <field name="description">Excedent Brut d exploitation</field>
+        <field name="sequence">140</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_140" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_140_ebe"/>
+        <field name="name">valeur_ajoutee + impots_taxes + charges_pers</field>
+    </record>
+
+    <!-- V. RESULTAT OPERATIONNEL -->
+    <record id="kpi_cr_150_aut_prod_exp" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">aut_prod_exp</field>
+        <field name="description">Autres produits d exploitation</field>
+        <field name="sequence">150</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_150" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_150_aut_prod_exp"/>
+        <field name="name">balp[75%]</field>
+    </record>
+
+    <record id="kpi_cr_160_reprises_prov" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">reprises_prov</field>
+        <field name="description">Reprises sur provisions</field>
+        <field name="sequence">160</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_160" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_160_reprises_prov"/>
+        <field name="name">balp[781%] + balp[785%]</field>
+    </record>
+
+    <record id="kpi_cr_170_aut_ch_exp" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">aut_ch_exp</field>
+        <field name="description">Autres charges d exploitation</field>
+        <field name="sequence">170</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_170" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_170_aut_ch_exp"/>
+        <field name="name">-balp[65%]</field>
+    </record>
+
+    <record id="kpi_cr_180_dot_amort" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">dot_amort</field>
+        <field name="description">Dotations aux Amortissements</field>
+        <field name="sequence">180</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_180" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_180_dot_amort"/>
+        <field name="name">-balp[681%]</field>
+    </record>
+
+    <record id="kpi_cr_190_dot_prov" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">dot_prov</field>
+        <field name="description">Dotations aux provisions</field>
+        <field name="sequence">190</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_190" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_190_dot_prov"/>
+        <field name="name">-balp[685%] - balp[686%]</field>
+    </record>
+
+    <record id="kpi_cr_200_res_operationnel" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">res_operationnel</field>
+        <field name="description">V - RESULTAT OPERATIONNEL</field>
+        <field name="sequence">200</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_result"/>
+    </record>
+    <record id="kpi_expr_200" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_200_res_operationnel"/>
+        <field name="name">ebe + aut_prod_exp + reprises_prov + aut_ch_exp + dot_amort + dot_prov</field>
+    </record>
+
+    <!-- VI. RESULTAT FINANCIER -->
+    <record id="kpi_cr_210_prod_fin" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">prod_fin</field>
+        <field name="description">Produits Financiers</field>
+        <field name="sequence">210</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_210" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_210_prod_fin"/>
+        <field name="name">balp[76%]</field>
+    </record>
+
+    <record id="kpi_cr_220_ch_fin" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">ch_fin</field>
+        <field name="description">Charges Financieres</field>
+        <field name="sequence">220</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_220" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_220_ch_fin"/>
+        <field name="name">-balp[66%]</field>
+    </record>
+
+    <record id="kpi_cr_230_res_financier" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">res_financier</field>
+        <field name="description">VI - RESULTAT FINANCIER</field>
+        <field name="sequence">230</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_230" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_230_res_financier"/>
+        <field name="name">prod_fin + ch_fin</field>
+    </record>
+
+    <!-- VII. RESULTAT AVANT IMPOTS -->
+    <record id="kpi_cr_240_res_avant_impots" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">res_avant_impots</field>
+        <field name="description">VII - RESULTAT AVANT IMPOTS</field>
+        <field name="sequence">240</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_result"/>
+    </record>
+    <record id="kpi_expr_240" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_240_res_avant_impots"/>
+        <field name="name">res_operationnel + res_financier</field>
+    </record>
+
+    <record id="kpi_cr_250_impot_resultat" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">impot_resultat</field>
+        <field name="description">Impots exigibles sur resultats</field>
+        <field name="sequence">250</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_250" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_250_impot_resultat"/>
+        <field name="name">-balp[695%]</field>
+    </record>
+
+    <!-- VIII. RESULTAT NET DES ACTIVITES ORDINAIRES -->
+    <record id="kpi_cr_260_rn_act_ord" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">rn_act_ord</field>
+        <field name="description">VIII - RESULTAT NET DES ACTIVITES ORDINAIRES</field>
+        <field name="sequence">260</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_result"/>
+    </record>
+    <record id="kpi_expr_260" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_260_rn_act_ord"/>
+        <field name="name">res_avant_impots + impot_resultat</field>
+    </record>
+
+    <!-- RESULTAT EXTRAORDINAIRE -->
+    <record id="kpi_cr_270_prod_extra" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">prod_extra</field>
+        <field name="description">Produits Extraordinaires</field>
+        <field name="sequence">270</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_270" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_270_prod_extra"/>
+        <field name="name">balp[77%]</field>
+    </record>
+
+    <record id="kpi_cr_280_ch_extra" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">ch_extra</field>
+        <field name="description">Charges Extraordinaires</field>
+        <field name="sequence">280</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_280" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_280_ch_extra"/>
+        <field name="name">-balp[67%]</field>
+    </record>
+
+    <record id="kpi_cr_290_res_extra" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">res_extra</field>
+        <field name="description">RESULTAT EXTRAORDINAIRES</field>
+        <field name="sequence">290</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_290" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_290_res_extra"/>
+        <field name="name">prod_extra + ch_extra</field>
+    </record>
+
+    <!-- RESULTAT NET DE L'EXERCICE -->
+    <record id="kpi_cr_300_resultat_net" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_cr_par_nature"/>
+        <field name="name">resultat_net</field>
+        <field name="description">RESULTAT NET DE L EXERCICE</field>
+        <field name="sequence">300</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_final"/>
+    </record>
+    <record id="kpi_expr_300" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_cr_300_resultat_net"/>
+        <field name="name">rn_act_ord + res_extra</field>
+    </record>
+
+</odoo>

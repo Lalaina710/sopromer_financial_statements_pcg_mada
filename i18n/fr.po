@@ -1,0 +1,192 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * sopromer_financial_statements_pcg_mada
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-25 00:00+0000\n"
+"PO-Revision-Date: 2026-05-25 00:00+0000\n"
+"Last-Translator: SOPROMER <admin@sopromer.mg>\n"
+"Language-Team: French <fr@sopromer.mg>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report,name:sopromer_financial_statements_pcg_mada.mis_report_cr_par_nature
+msgid "COMPTE DE RESULTAT PAR NATURE"
+msgstr "COMPTE DE RESULTAT PAR NATURE"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.instance,name:sopromer_financial_statements_pcg_mada.mis_report_instance_cr_nature
+msgid "CR par Nature - PCG Madagascar (exemple)"
+msgstr "CR par Nature - PCG Madagascar (exemple)"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.instance.period,name:sopromer_financial_statements_pcg_mada.mis_report_period_2025
+msgid "Exercice 2025"
+msgstr "Exercice 2025"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.instance.period,name:sopromer_financial_statements_pcg_mada.mis_report_period_2024
+msgid "Exercice 2024"
+msgstr "Exercice 2024"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_010_ventes_march
+msgid "Ventes de marchandises"
+msgstr "Ventes de marchandises"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_020_moins_achats
+msgid "Cout d achat des marchandises"
+msgstr "Coût d'achat des marchandises"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_030_moins_var_stocks
+msgid "Variation de Stocks"
+msgstr "Variation de Stocks"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_040_marge_commerciale
+msgid "MARGE COMMERCIALE"
+msgstr "MARGE COMMERCIALE"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_050_prod_vendue
+msgid "Production vendue"
+msgstr "Production vendue"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_060_prod_stockee
+msgid "Production stockee"
+msgstr "Production stockée"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_070_prod_exercice
+msgid "I - PRODUCTION DE L EXERCICE"
+msgstr "I - PRODUCTION DE L'EXERCICE"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_080_autres_achats
+msgid "Autres achats et Fournitures"
+msgstr "Autres achats et Fournitures"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_090_charges_ext
+msgid "Charges Externes"
+msgstr "Charges Externes"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_100_conso_inter
+msgid "II - CONSOMMATIONS INTERMEDIAIRES"
+msgstr "II - CONSOMMATIONS INTERMÉDIAIRES"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_110_valeur_ajoutee
+msgid "III - VALEUR AJOUTEE"
+msgstr "III - VALEUR AJOUTÉE"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_120_impots_taxes
+msgid "Impots et Taxes"
+msgstr "Impôts et Taxes"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_130_charges_pers
+msgid "Charges de Personnel"
+msgstr "Charges de Personnel"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_140_ebe
+msgid "Excedent Brut d exploitation"
+msgstr "Excédent Brut d'Exploitation (EBE)"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_150_aut_prod_exp
+msgid "Autres produits d exploitation"
+msgstr "Autres produits d'exploitation"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_160_reprises_prov
+msgid "Reprises sur provisions"
+msgstr "Reprises sur provisions"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_170_aut_ch_exp
+msgid "Autres charges d exploitation"
+msgstr "Autres charges d'exploitation"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_180_dot_amort
+msgid "Dotations aux Amortissements"
+msgstr "Dotations aux Amortissements"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_190_dot_prov
+msgid "Dotations aux provisions"
+msgstr "Dotations aux provisions"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_200_res_operationnel
+msgid "V - RESULTAT OPERATIONNEL"
+msgstr "V - RÉSULTAT OPÉRATIONNEL"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_210_prod_fin
+msgid "Produits Financiers"
+msgstr "Produits Financiers"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_220_ch_fin
+msgid "Charges Financieres"
+msgstr "Charges Financières"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_230_res_financier
+msgid "VI - RESULTAT FINANCIER"
+msgstr "VI - RÉSULTAT FINANCIER"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_240_res_avant_impots
+msgid "VII - RESULTAT AVANT IMPOTS"
+msgstr "VII - RÉSULTAT AVANT IMPÔTS"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_250_impot_resultat
+msgid "Impots exigibles sur resultats"
+msgstr "Impôts exigibles sur résultats"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_260_rn_act_ord
+msgid "VIII - RESULTAT NET DES ACTIVITES ORDINAIRES"
+msgstr "VIII - RÉSULTAT NET DES ACTIVITÉS ORDINAIRES"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_270_prod_extra
+msgid "Produits Extraordinaires"
+msgstr "Produits Extraordinaires"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_280_ch_extra
+msgid "Charges Extraordinaires"
+msgstr "Charges Extraordinaires"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_290_res_extra
+msgid "RESULTAT EXTRAORDINAIRES"
+msgstr "RÉSULTAT EXTRAORDINAIRE"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:mis.report.kpi,description:sopromer_financial_statements_pcg_mada.kpi_cr_300_resultat_net
+msgid "RESULTAT NET DE L EXERCICE"
+msgstr "RÉSULTAT NET DE L'EXERCICE"
+
+#. module: sopromer_financial_statements_pcg_mada
+#: model:report.paperformat,name:sopromer_financial_statements_pcg_mada.paperformat_a4_mada_financial
+msgid "A4 PCG Madagascar Financial"
+msgstr "A4 PCG Madagascar - Etats Financiers"

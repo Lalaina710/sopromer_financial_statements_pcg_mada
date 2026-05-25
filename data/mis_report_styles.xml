@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 SOPROMER
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
+<odoo noupdate="1">
+
+    <!-- Style CR_Detail : lignes de detail (indent 2, non gras) -->
+    <record id="style_cr_detail" model="mis.report.style">
+        <field name="name">SFS_CR_Detail</field>
+        <field name="indent_level">2</field>
+        <field name="dp">0</field>
+        <field name="color">#000000</field>
+        <field name="background_color">#FFFFFF</field>
+        <field name="divider">1</field>
+        <field name="color_inherit" eval="True"/>
+        <field name="background_color_inherit" eval="True"/>
+        <field name="font_style_inherit" eval="True"/>
+        <field name="font_weight_inherit" eval="True"/>
+        <field name="font_size_inherit" eval="True"/>
+        <field name="indent_level_inherit" eval="False"/>
+        <field name="prefix_inherit" eval="True"/>
+        <field name="suffix_inherit" eval="True"/>
+        <field name="dp_inherit" eval="True"/>
+        <field name="divider_inherit" eval="True"/>
+        <field name="hide_empty_inherit" eval="True"/>
+        <field name="hide_empty" eval="False"/>
+        <field name="hide_always_inherit" eval="True"/>
+        <field name="hide_always" eval="False"/>
+    </record>
+
+    <!-- Style CR_Subtotal : sous-totaux intermediaires (indent 1, gras) -->
+    <record id="style_cr_subtotal" model="mis.report.style">
+        <field name="name">SFS_CR_Subtotal</field>
+        <field name="indent_level">1</field>
+        <field name="dp">0</field>
+        <field name="color">#000000</field>
+        <field name="background_color">#FFFFFF</field>
+        <field name="font_weight">bold</field>
+        <field name="divider">1</field>
+        <field name="color_inherit" eval="True"/>
+        <field name="background_color_inherit" eval="True"/>
+        <field name="font_style_inherit" eval="True"/>
+        <field name="font_weight_inherit" eval="False"/>
+        <field name="font_size_inherit" eval="True"/>
+        <field name="indent_level_inherit" eval="False"/>
+        <field name="prefix_inherit" eval="True"/>
+        <field name="suffix_inherit" eval="True"/>
+        <field name="dp_inherit" eval="True"/>
+        <field name="divider_inherit" eval="True"/>
+        <field name="hide_empty_inherit" eval="True"/>
+        <field name="hide_empty" eval="False"/>
+        <field name="hide_always_inherit" eval="True"/>
+        <field name="hide_always" eval="False"/>
+    </record>
+
+    <!-- Style CR_Result : resultats majeurs (indent 0, gras, fond jaune clair) -->
+    <record id="style_cr_result" model="mis.report.style">
+        <field name="name">SFS_CR_Result</field>
+        <field name="indent_level">0</field>
+        <field name="dp">0</field>
+        <field name="color">#000000</field>
+        <field name="background_color">#FFE699</field>
+        <field name="font_weight">bold</field>
+        <field name="divider">1</field>
+        <field name="color_inherit" eval="True"/>
+        <field name="background_color_inherit" eval="False"/>
+        <field name="font_style_inherit" eval="True"/>
+        <field name="font_weight_inherit" eval="False"/>
+        <field name="font_size_inherit" eval="True"/>
+        <field name="indent_level_inherit" eval="False"/>
+        <field name="prefix_inherit" eval="True"/>
+        <field name="suffix_inherit" eval="True"/>
+        <field name="dp_inherit" eval="True"/>
+        <field name="divider_inherit" eval="True"/>
+        <field name="hide_empty_inherit" eval="True"/>
+        <field name="hide_empty" eval="False"/>
+        <field name="hide_always_inherit" eval="True"/>
+        <field name="hide_always" eval="False"/>
+    </record>
+
+    <!-- Style CR_Final : resultat net final (indent 0, gras, fond orange) -->
+    <record id="style_cr_final" model="mis.report.style">
+        <field name="name">SFS_CR_Final</field>
+        <field name="indent_level">0</field>
+        <field name="dp">0</field>
+        <field name="color">#000000</field>
+        <field name="background_color">#FFC000</field>
+        <field name="font_weight">bold</field>
+        <field name="divider">1</field>
+        <field name="color_inherit" eval="True"/>
+        <field name="background_color_inherit" eval="False"/>
+        <field name="font_style_inherit" eval="True"/>
+        <field name="font_weight_inherit" eval="False"/>
+        <field name="font_size_inherit" eval="True"/>
+        <field name="indent_level_inherit" eval="False"/>
+        <field name="prefix_inherit" eval="True"/>
+        <field name="suffix_inherit" eval="True"/>
+        <field name="dp_inherit" eval="True"/>
+        <field name="divider_inherit" eval="True"/>
+        <field name="hide_empty_inherit" eval="True"/>
+        <field name="hide_empty" eval="False"/>
+        <field name="hide_always_inherit" eval="True"/>
+        <field name="hide_always" eval="False"/>
+    </record>
+
+</odoo>

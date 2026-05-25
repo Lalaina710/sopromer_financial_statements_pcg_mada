@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 SOPROMER
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+
+     Phase A - version minimaliste :
+     Ajoute un en-tete societe (nom + ville) en haut du PDF MIS Report.
+     Phase B prevoit format pixel-perfect MEDICAL-style (RC + NIF + capital,
+     formatage chiffres locale FR, lignes alternees).
+-->
+<odoo>
+
+    <!-- En-tete societe avant le titre du MIS Report PDF -->
+    <template id="mis_report_header_sopromer_financial"
+              inherit_id="mis_builder.report_mis_report_instance"
+              name="SOPROMER Financial Header">
+        <xpath expr="//div[@class='page']" position="before">
+            <div class="row" style="margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;">
+                <div class="col-8">
+                    <strong style="font-size: 14px;">
+                        <t t-esc="o.company_id.name or res_company.name"/>
+                    </strong>
+                    <br/>
+                    <span t-if="o.company_id.city or res_company.city">
+                        <t t-esc="o.company_id.city or res_company.city"/>
+                        <t t-if="o.company_id.country_id or res_company.country_id">
+                            -
+                            <t t-esc="(o.company_id.country_id or res_company.country_id).name"/>
+                        </t>
+                    </span>
+                </div>
+                <div class="col-4 text-right">
+                    <span style="font-size: 10px;">
+                        Edite le
+                        <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/>
+                    </span>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>
