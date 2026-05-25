@@ -19,10 +19,9 @@
         <field name="temporary" eval="False"/>
         <field name="widget_show_filters" eval="True"/>
         <field name="display_columns_description" eval="True"/>
-        <!-- comparison_mode = True active la gestion des periodes relatives
-             Sans cela, mis_builder ecrase date_from/date_to des periodes
-             avec date_from/date_to de l'instance (mode mono-periode) -->
-        <field name="comparison_mode" eval="True"/>
+        <!-- comparison_mode = True est AUTO-CALCULE quand period_ids existent
+             ET date_from/date_to non renseignes (cf _compute_comparison_mode
+             dans mis_builder source). Ne pas hardcoder ce field computed. -->
     </record>
 
     <!-- Periode 1 : Exercice courant (offset 0 par rapport au pivot_date = today) -->
