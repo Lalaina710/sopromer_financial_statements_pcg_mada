@@ -1,0 +1,782 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 SOPROMER
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+
+     BILAN ACTIF - PCG 2005 Madagascar
+     Cascade officielle ACTIFS NON COURANTS -> ACTIFS COURANTS -> TOTAL DES ACTIFS
+     Source : bale[X%] = balance finale a date_to (solde cumule)
+
+     Convention signes :
+       Actifs ont solde naturel debit (positif), donc bale[X%] retourne positif
+       Pas d'inversion necessaire
+
+     Notes setup hybride (classes 1, 2, 3 souvent vides Odoo - gerees ERP externe Sage):
+       Les lignes immo et stocks afficheront 0 ou tres faible valeur
+       Comptable peut tracer/ajuster via UI plus tard
+-->
+<odoo noupdate="1">
+
+    <!-- Template principal -->
+    <record id="mis_report_bilan_actif" model="mis.report">
+        <field name="name">BILAN ACTIF</field>
+        <field name="move_lines_source" ref="account.model_account_move_line"/>
+    </record>
+
+    <!-- ============================================ -->
+    <!-- SECTION : ACTIFS NON COURANTS                -->
+    <!-- ============================================ -->
+
+    <!-- Header section -->
+    <record id="kpi_ba_010_section_anc" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">section_anc</field>
+        <field name="description">ACTIFS NON COURANTS</field>
+        <field name="sequence">10</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_ba_010" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_010_section_anc"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <!-- Ecarts d'acquisition -->
+    <record id="kpi_ba_020_ecarts_acq" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">ecarts_acquisition</field>
+        <field name="description">Ecarts d acquisition</field>
+        <field name="sequence">20</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_020" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_020_ecarts_acq"/>
+        <field name="name">bale[207%]</field>
+    </record>
+
+    <!-- Immobilisations incorporelles (sous-total) -->
+    <record id="kpi_ba_030_immo_incorp" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">immo_incorp</field>
+        <field name="description">Immobilisations incorporelles</field>
+        <field name="sequence">30</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_ba_030" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_030_immo_incorp"/>
+        <field name="name">frais_etab + concessions + droit_bail + logiciels</field>
+    </record>
+
+    <record id="kpi_ba_040_frais_etab" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">frais_etab</field>
+        <field name="description">Frais d etablissement</field>
+        <field name="sequence">40</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_040" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_040_frais_etab"/>
+        <field name="name">bale[201%]</field>
+    </record>
+
+    <record id="kpi_ba_050_concessions" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">concessions</field>
+        <field name="description">Concessions et licences</field>
+        <field name="sequence">50</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_050" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_050_concessions"/>
+        <field name="name">bale[205%]</field>
+    </record>
+
+    <record id="kpi_ba_060_droit_bail" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">droit_bail</field>
+        <field name="description">Droit au bail</field>
+        <field name="sequence">60</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_060" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_060_droit_bail"/>
+        <field name="name">bale[206%]</field>
+    </record>
+
+    <record id="kpi_ba_070_logiciels" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">logiciels</field>
+        <field name="description">Logiciels informatiques</field>
+        <field name="sequence">70</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_070" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_070_logiciels"/>
+        <field name="name">bale[208%]</field>
+    </record>
+
+    <!-- Immobilisations corporelles (sous-total) -->
+    <record id="kpi_ba_080_immo_corp" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">immo_corp</field>
+        <field name="description">Immobilisations corporelles</field>
+        <field name="sequence">80</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_ba_080" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_080_immo_corp"/>
+        <field name="name">mat_outil + install_spec + mat_transport + install_div + mat_bureau + mob_bureau + mat_info + mat_tel + mat_audio + petits_mat</field>
+    </record>
+
+    <record id="kpi_ba_090_mat_outil" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">mat_outil</field>
+        <field name="description">Materiel et Outillage</field>
+        <field name="sequence">90</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_090" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_090_mat_outil"/>
+        <field name="name">bale[2154%] + bale[2155%]</field>
+    </record>
+
+    <record id="kpi_ba_100_install_spec" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">install_spec</field>
+        <field name="description">Installations specialisees</field>
+        <field name="sequence">100</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_100" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_100_install_spec"/>
+        <field name="name">bale[2152%]</field>
+    </record>
+
+    <record id="kpi_ba_110_mat_transport" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">mat_transport</field>
+        <field name="description">Materiel de Transport</field>
+        <field name="sequence">110</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_110" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_110_mat_transport"/>
+        <field name="name">bale[2182%]</field>
+    </record>
+
+    <record id="kpi_ba_120_install_div" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">install_div</field>
+        <field name="description">Installations diverses</field>
+        <field name="sequence">120</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_120" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_120_install_div"/>
+        <field name="name">bale[2153%] + bale[2158%]</field>
+    </record>
+
+    <record id="kpi_ba_130_mat_bureau" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">mat_bureau</field>
+        <field name="description">Materiel de Bureau</field>
+        <field name="sequence">130</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_130" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_130_mat_bureau"/>
+        <field name="name">bale[2183%]</field>
+    </record>
+
+    <record id="kpi_ba_140_mob_bureau" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">mob_bureau</field>
+        <field name="description">Mobilier de Bureau</field>
+        <field name="sequence">140</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_140" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_140_mob_bureau"/>
+        <field name="name">bale[2184%]</field>
+    </record>
+
+    <record id="kpi_ba_150_mat_info" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">mat_info</field>
+        <field name="description">Materiel informatique</field>
+        <field name="sequence">150</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_150" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_150_mat_info"/>
+        <field name="name">bale[2183%]</field>
+    </record>
+
+    <record id="kpi_ba_160_mat_tel" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">mat_tel</field>
+        <field name="description">Materiel Telephonique</field>
+        <field name="sequence">160</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_160" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_160_mat_tel"/>
+        <field name="name">bale[2185%]</field>
+    </record>
+
+    <record id="kpi_ba_170_mat_audio" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">mat_audio</field>
+        <field name="description">Materiel Audio visuels</field>
+        <field name="sequence">170</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_170" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_170_mat_audio"/>
+        <field name="name">bale[2186%]</field>
+    </record>
+
+    <record id="kpi_ba_180_petits_mat" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">petits_mat</field>
+        <field name="description">Immo - Petits Materiels</field>
+        <field name="sequence">180</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_180" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_180_petits_mat"/>
+        <field name="name">bale[2188%]</field>
+    </record>
+
+    <!-- Immobilisations en cours -->
+    <record id="kpi_ba_190_immo_cours" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">immo_cours</field>
+        <field name="description">Immobilisations en cours</field>
+        <field name="sequence">190</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_ba_190" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_190_immo_cours"/>
+        <field name="name">bale[23%]</field>
+    </record>
+
+    <!-- Immobilisations financieres (sous-total) -->
+    <record id="kpi_ba_200_immo_fin" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">immo_fin</field>
+        <field name="description">Immobilisations financieres</field>
+        <field name="sequence">200</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_ba_200" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_200_immo_fin"/>
+        <field name="name">titres_eq + autres_part + autres_titres + prets + cautions</field>
+    </record>
+
+    <record id="kpi_ba_210_titres_eq" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">titres_eq</field>
+        <field name="description">Titres mis en equivalence</field>
+        <field name="sequence">210</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_210" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_210_titres_eq"/>
+        <field name="name">bale[261%]</field>
+    </record>
+
+    <record id="kpi_ba_220_autres_part" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">autres_part</field>
+        <field name="description">Autres participations et creances attachees</field>
+        <field name="sequence">220</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_220" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_220_autres_part"/>
+        <field name="name">bale[262%] + bale[263%]</field>
+    </record>
+
+    <record id="kpi_ba_230_autres_titres" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">autres_titres</field>
+        <field name="description">Autres titres immobilises</field>
+        <field name="sequence">230</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_230" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_230_autres_titres"/>
+        <field name="name">bale[271%] + bale[272%]</field>
+    </record>
+
+    <record id="kpi_ba_240_prets" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">prets</field>
+        <field name="description">Prets et autres immobilisations financieres</field>
+        <field name="sequence">240</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_240" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_240_prets"/>
+        <field name="name">bale[274%] + bale[276%]</field>
+    </record>
+
+    <record id="kpi_ba_250_cautions" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">cautions</field>
+        <field name="description">Depots et Cautionnements verses</field>
+        <field name="sequence">250</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_250" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_250_cautions"/>
+        <field name="name">bale[275%]</field>
+    </record>
+
+    <!-- Impots differes actifs non courants -->
+    <record id="kpi_ba_260_imp_diff_anc" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">imp_diff_anc</field>
+        <field name="description">Impots differes actifs - non courants</field>
+        <field name="sequence">260</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_260" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_260_imp_diff_anc"/>
+        <field name="name">bale[133%]</field>
+    </record>
+
+    <!-- TOTAL ACTIFS NON COURANTS -->
+    <record id="kpi_ba_270_total_anc" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">total_anc</field>
+        <field name="description">TOTAL ACTIFS NON COURANTS</field>
+        <field name="sequence">270</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_result"/>
+    </record>
+    <record id="kpi_expr_ba_270" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_270_total_anc"/>
+        <field name="name">ecarts_acquisition + immo_incorp + immo_corp + immo_cours + immo_fin + imp_diff_anc</field>
+    </record>
+
+    <!-- ============================================ -->
+    <!-- SECTION : ACTIFS COURANTS                    -->
+    <!-- ============================================ -->
+
+    <record id="kpi_ba_300_section_ac" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">section_ac</field>
+        <field name="description">ACTIFS COURANTS</field>
+        <field name="sequence">300</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_ba_300" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_300_section_ac"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <!-- Stocks et en cours (sous-total) -->
+    <record id="kpi_ba_310_stocks" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">stocks_total</field>
+        <field name="description">Stocks et en cours</field>
+        <field name="sequence">310</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_ba_310" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_310_stocks"/>
+        <field name="name">presta_service + marchandises + stocks_route</field>
+    </record>
+
+    <record id="kpi_ba_320_presta_service" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">presta_service</field>
+        <field name="description">Prestations de service EN COURS</field>
+        <field name="sequence">320</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_320" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_320_presta_service"/>
+        <field name="name">bale[34%]</field>
+    </record>
+
+    <record id="kpi_ba_330_marchandises" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">marchandises</field>
+        <field name="description">Marchandises</field>
+        <field name="sequence">330</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_330" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_330_marchandises"/>
+        <field name="name">bale[31%] + bale[37%]</field>
+    </record>
+
+    <record id="kpi_ba_340_stocks_route" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">stocks_route</field>
+        <field name="description">Stocks en cours de route</field>
+        <field name="sequence">340</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_340" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_340_stocks_route"/>
+        <field name="name">bale[38%]</field>
+    </record>
+
+    <!-- Creances et emplois assimiles (sous-total) -->
+    <record id="kpi_ba_350_creances" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">creances_total</field>
+        <field name="description">Creances et emplois assimiles</field>
+        <field name="sequence">350</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_ba_350" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_350_creances"/>
+        <field name="name">four_avance + clients + personnel_debit + etat_debit + debiteurs_div</field>
+    </record>
+
+    <record id="kpi_ba_360_four_avance" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">four_avance</field>
+        <field name="description">Fournisseurs Avance sur commande</field>
+        <field name="sequence">360</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_360" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_360_four_avance"/>
+        <field name="name">bale[409%]</field>
+    </record>
+
+    <record id="kpi_ba_370_clients" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">clients</field>
+        <field name="description">Clients</field>
+        <field name="sequence">370</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_370" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_370_clients"/>
+        <field name="name">bale[411%] + bale[416%]</field>
+    </record>
+
+    <record id="kpi_ba_380_personnel_debit" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">personnel_debit</field>
+        <field name="description">Personnel debit</field>
+        <field name="sequence">380</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_380" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_380_personnel_debit"/>
+        <field name="name">pbal[425%] + pbal[428%]</field>
+    </record>
+
+    <record id="kpi_ba_390_etat_debit" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">etat_debit</field>
+        <field name="description">Etat</field>
+        <field name="sequence">390</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_390" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_390_etat_debit"/>
+        <field name="name">pbal[44%]</field>
+    </record>
+
+    <record id="kpi_ba_400_debiteurs_div" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">debiteurs_div</field>
+        <field name="description">Debiteurs Divers</field>
+        <field name="sequence">400</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_400" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_400_debiteurs_div"/>
+        <field name="name">pbal[467%]</field>
+    </record>
+
+    <!-- Charges constatees avance -->
+    <record id="kpi_ba_410_cca" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">cca</field>
+        <field name="description">CHARGES CONSTATEES AVANCE</field>
+        <field name="sequence">410</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_ba_410" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_410_cca"/>
+        <field name="name">bale[486%]</field>
+    </record>
+
+    <!-- Tresorerie et equivalents (sous-total) -->
+    <record id="kpi_ba_420_treso" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">treso_total</field>
+        <field name="description">Tresorerie et equivalents de tresorerie</field>
+        <field name="sequence">420</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_ba_420" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_420_treso"/>
+        <field name="name">placements + cpt_attente + caisses + banques_ar + banques_dev + cheque_verser + virement_int</field>
+    </record>
+
+    <record id="kpi_ba_430_placements" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">placements</field>
+        <field name="description">Placements et autres equivalents de tresorerie</field>
+        <field name="sequence">430</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_430" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_430_placements"/>
+        <field name="name">bale[50%]</field>
+    </record>
+
+    <record id="kpi_ba_440_cpt_attente" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">cpt_attente</field>
+        <field name="description">Compte d attente a regulariser</field>
+        <field name="sequence">440</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_440" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_440_cpt_attente"/>
+        <field name="name">pbal[471%]</field>
+    </record>
+
+    <record id="kpi_ba_450_caisses" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">caisses</field>
+        <field name="description">Caisses</field>
+        <field name="sequence">450</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_450" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_450_caisses"/>
+        <field name="name">bale[53%] + bale[54%]</field>
+    </record>
+
+    <record id="kpi_ba_460_banques_ar" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">banques_ar</field>
+        <field name="description">Banque Ar</field>
+        <field name="sequence">460</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_460" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_460_banques_ar"/>
+        <field name="name">bale[512%] + bale[514%] - bale[5122%]</field>
+    </record>
+
+    <record id="kpi_ba_470_banques_dev" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">banques_dev</field>
+        <field name="description">Banque Devises</field>
+        <field name="sequence">470</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_470" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_470_banques_dev"/>
+        <field name="name">bale[5122%]</field>
+    </record>
+
+    <record id="kpi_ba_480_cheque_verser" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">cheque_verser</field>
+        <field name="description">Cheque a Verser</field>
+        <field name="sequence">480</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_480" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_480_cheque_verser"/>
+        <field name="name">bale[511%]</field>
+    </record>
+
+    <record id="kpi_ba_490_virement_int" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">virement_int</field>
+        <field name="description">Virement interne</field>
+        <field name="sequence">490</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_ba_490" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_490_virement_int"/>
+        <field name="name">bale[58%]</field>
+    </record>
+
+    <!-- TOTAL ACTIFS COURANTS -->
+    <record id="kpi_ba_500_total_ac" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">total_ac</field>
+        <field name="description">TOTAL ACTIFS COURANTS</field>
+        <field name="sequence">500</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_result"/>
+    </record>
+    <record id="kpi_expr_ba_500" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_500_total_ac"/>
+        <field name="name">stocks_total + creances_total + cca + treso_total</field>
+    </record>
+
+    <!-- TOTAL DES ACTIFS -->
+    <record id="kpi_ba_999_total_actifs" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_actif"/>
+        <field name="name">total_actifs</field>
+        <field name="description">TOTAL DES ACTIFS</field>
+        <field name="sequence">999</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_final"/>
+    </record>
+    <record id="kpi_expr_ba_999" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_ba_999_total_actifs"/>
+        <field name="name">total_anc + total_ac</field>
+    </record>
+
+</odoo>
