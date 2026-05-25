@@ -5,6 +5,14 @@
      Compte de Resultat par Nature - PCG 2005 Madagascar
      Cascade officielle en 8 etapes (Marge Commerciale -> Resultat Net)
      30 KPIs - source : balp[] (balance posted only)
+
+     v18.0.3.0.0 - Convention signes :
+       - Produits (classes 7, 75, 76, 77) : -balp[X%] => positif a l'affichage
+       - Charges (classes 6) : -balp[X%] => negatif a l'affichage
+       - Sous-totaux : somme algebrique directe (cascade)
+     bal[X] = debit - credit. Produits naturellement crediteurs => bal negatif
+     => -bal devient positif. Charges naturellement debitrices => bal positif
+     => -bal devient negatif. Convention compta CR respectee.
 -->
 <odoo noupdate="1">
 
@@ -31,7 +39,7 @@
     </record>
     <record id="kpi_expr_010" model="mis.report.kpi.expression">
         <field name="kpi_id" ref="kpi_cr_010_ventes_march"/>
-        <field name="name">balp[707%] + balp[702%]</field>
+        <field name="name">-balp[707%] - balp[702%]</field>
     </record>
 
     <record id="kpi_cr_020_moins_achats" model="mis.report.kpi">
@@ -92,7 +100,7 @@
     </record>
     <record id="kpi_expr_050" model="mis.report.kpi.expression">
         <field name="kpi_id" ref="kpi_cr_050_prod_vendue"/>
-        <field name="name">balp[706%]</field>
+        <field name="name">-balp[706%]</field>
     </record>
 
     <record id="kpi_cr_060_prod_stockee" model="mis.report.kpi">
@@ -107,7 +115,7 @@
     </record>
     <record id="kpi_expr_060" model="mis.report.kpi.expression">
         <field name="kpi_id" ref="kpi_cr_060_prod_stockee"/>
-        <field name="name">balp[713%]</field>
+        <field name="name">-balp[713%]</field>
     </record>
 
     <record id="kpi_cr_070_prod_exercice" model="mis.report.kpi">
@@ -246,7 +254,7 @@
     </record>
     <record id="kpi_expr_150" model="mis.report.kpi.expression">
         <field name="kpi_id" ref="kpi_cr_150_aut_prod_exp"/>
-        <field name="name">balp[75%]</field>
+        <field name="name">-balp[75%]</field>
     </record>
 
     <record id="kpi_cr_160_reprises_prov" model="mis.report.kpi">
@@ -261,7 +269,7 @@
     </record>
     <record id="kpi_expr_160" model="mis.report.kpi.expression">
         <field name="kpi_id" ref="kpi_cr_160_reprises_prov"/>
-        <field name="name">balp[781%] + balp[785%]</field>
+        <field name="name">-balp[781%] - balp[785%]</field>
     </record>
 
     <record id="kpi_cr_170_aut_ch_exp" model="mis.report.kpi">
@@ -337,7 +345,7 @@
     </record>
     <record id="kpi_expr_210" model="mis.report.kpi.expression">
         <field name="kpi_id" ref="kpi_cr_210_prod_fin"/>
-        <field name="name">balp[76%]</field>
+        <field name="name">-balp[76%]</field>
     </record>
 
     <record id="kpi_cr_220_ch_fin" model="mis.report.kpi">
@@ -430,7 +438,7 @@
     </record>
     <record id="kpi_expr_270" model="mis.report.kpi.expression">
         <field name="kpi_id" ref="kpi_cr_270_prod_extra"/>
-        <field name="name">balp[77%]</field>
+        <field name="name">-balp[77%]</field>
     </record>
 
     <record id="kpi_cr_280_ch_extra" model="mis.report.kpi">

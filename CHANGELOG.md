@@ -2,6 +2,30 @@
 
 All notable changes to this module will be documented in this file.
 
+## [18.0.3.0.0] - 2026-05-25
+
+### Fixed - Phase B1.1 : bugs rendu PDF (suite review Herve)
+
+- **Signes expressions mis_builder** : ajout prefixe `-` sur toutes les expressions
+  referencant les classes de produits (7XX, 75, 76, 77, 781, 785, 702, 706, 713)
+  pour convention CR officielle (produits affiches positifs, charges negatives).
+  bal[X] = debit - credit ; pour produits naturellement crediteurs, -bal devient
+  positif. KPIs corriges : 010 (ventes_march), 050 (prod_vendue), 060 (prod_stockee),
+  150 (aut_prod_exp), 160 (reprises_prov), 210 (prod_fin), 270 (prod_extra) - 7 KPIs.
+  Cascade sous-totaux (marge_commerciale, valeur_ajoutee, ebe, res_operationnel,
+  res_avant_impots, rn_act_ord, resultat_net) inchangee : somme algebrique directe.
+- **Titre dupliqué QWeb** : suppression de la date du `name` instance
+  ("COMPTE DE RESULTAT PAR NATURE AU 31/12/2025" -> "COMPTE DE RESULTAT PAR NATURE").
+  Le QWeb ajoute dynamiquement "AU date_to" via `o.date_to.strftime('%d/%m/%y')`.
+- **Periodes corrigees** : Exercice 2026 YTD (2026-01-01 -> 2026-12-31, data
+  disponible REST220526) + Exercice 2025 (N-1, sera vide sur snapshot test mais
+  cadre normal). date_from/date_to instance alignes 2026.
+
+### Validation
+- Ventes marchandises : positif (avant : negatif)
+- Marge commerciale : positive (avant : negative)
+- Resultat net : signe coherent avec activite (avant : faussement negatif)
+
 ## [18.0.2.0.0] - 2026-05-25
 
 ### Added - Phase B1 : QWeb pixel-perfect MEDICAL-style
