@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 SOPROMER
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+
+     BILAN PASSIF - PCG 2005 Madagascar
+     Cascade officielle CAPITAUX PROPRES -> PASSIFS NON COURANTS -> PASSIFS COURANTS -> TOTAL DES PASSIFS
+     Source : -bale[X%] (passif = solde crediteur naturel, inverse pour affichage positif)
+
+     Convention signes :
+       Capitaux/Dettes ont solde naturel credit (negatif en bale[])
+       -bale[X%] retourne positif a l'affichage
+       Pour comptes mixtes (44, 467), utiliser nbal[] (negative balance only)
+-->
+<odoo noupdate="1">
+
+    <record id="mis_report_bilan_passif" model="mis.report">
+        <field name="name">BILAN PASSIF</field>
+        <field name="move_lines_source" ref="account.model_account_move_line"/>
+    </record>
+
+    <!-- ============================================ -->
+    <!-- SECTION : CAPITAUX PROPRES                   -->
+    <!-- ============================================ -->
+
+    <record id="kpi_bp_010_section_cp" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">section_cp</field>
+        <field name="description">CAPITAUX PROPRES</field>
+        <field name="sequence">10</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_bp_010" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_010_section_cp"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <record id="kpi_bp_020_capital" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">capital_social</field>
+        <field name="description">Capital Social</field>
+        <field name="sequence">20</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_020" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_020_capital"/>
+        <field name="name">-bale[101%]</field>
+    </record>
+
+    <record id="kpi_bp_030_reserve_leg" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">reserve_legale</field>
+        <field name="description">Reserve legale</field>
+        <field name="sequence">30</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_030" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_030_reserve_leg"/>
+        <field name="name">-bale[1061%] - bale[106%]</field>
+    </record>
+
+    <record id="kpi_bp_040_ecart_eval" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">ecarts_evaluation</field>
+        <field name="description">Ecarts d evaluation</field>
+        <field name="sequence">40</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_040" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_040_ecart_eval"/>
+        <field name="name">-bale[105%]</field>
+    </record>
+
+    <record id="kpi_bp_050_ecart_equiv" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">ecarts_equivalence</field>
+        <field name="description">Ecarts d equivalence</field>
+        <field name="sequence">50</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_050" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_050_ecart_equiv"/>
+        <field name="name">-bale[107%]</field>
+    </record>
+
+    <record id="kpi_bp_060_resultat_net" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">resultat_net_bp</field>
+        <field name="description">Resultat net</field>
+        <field name="sequence">60</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_060" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_060_resultat_net"/>
+        <field name="name">-bale[12%]</field>
+    </record>
+
+    <record id="kpi_bp_070_ran" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">ran</field>
+        <field name="description">Autres capitaux propres - RAN</field>
+        <field name="sequence">70</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_070" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_070_ran"/>
+        <field name="name">-bale[11%]</field>
+    </record>
+
+    <record id="kpi_bp_080_res_instance" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">res_instance</field>
+        <field name="description">Resultat en instance d affectation</field>
+        <field name="sequence">80</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_080" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_080_res_instance"/>
+        <field name="name">-bale[129%]</field>
+    </record>
+
+    <record id="kpi_bp_090_chg_methode" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">chg_methode</field>
+        <field name="description">Changement de methode comptable</field>
+        <field name="sequence">90</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_090" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_090_chg_methode"/>
+        <field name="name">-bale[108%]</field>
+    </record>
+
+    <record id="kpi_bp_100_correc_erreur" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">correc_erreur</field>
+        <field name="description">Correction d erreur</field>
+        <field name="sequence">100</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_100" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_100_correc_erreur"/>
+        <field name="name">-bale[109%]</field>
+    </record>
+
+    <!-- TOTAL CAPITAUX PROPRES -->
+    <record id="kpi_bp_110_total_cp" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">total_cp</field>
+        <field name="description">TOTAL CAPITAUX PROPRES</field>
+        <field name="sequence">110</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_result"/>
+    </record>
+    <record id="kpi_expr_bp_110" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_110_total_cp"/>
+        <field name="name">capital_social + reserve_legale + ecarts_evaluation + ecarts_equivalence + resultat_net_bp + ran + res_instance + chg_methode + correc_erreur</field>
+    </record>
+
+    <!-- ============================================ -->
+    <!-- SECTION : PASSIFS NON COURANTS               -->
+    <!-- ============================================ -->
+
+    <record id="kpi_bp_200_section_pnc" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">section_pnc</field>
+        <field name="description">PASSIFS NON-COURANTS</field>
+        <field name="sequence">200</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_bp_200" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_200_section_pnc"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <record id="kpi_bp_210_prod_diff" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">prod_diff</field>
+        <field name="description">Produits differes : subvention d investissement</field>
+        <field name="sequence">210</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_210" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_210_prod_diff"/>
+        <field name="name">-bale[13%] - bale[14%]</field>
+    </record>
+
+    <record id="kpi_bp_220_imp_diff_pas" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">imp_diff_pas</field>
+        <field name="description">Impots differes</field>
+        <field name="sequence">220</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_220" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_220_imp_diff_pas"/>
+        <field name="name">-bale[155%]</field>
+    </record>
+
+    <record id="kpi_bp_230_emp_ct" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">emp_ct</field>
+        <field name="description">Emprunts et dettes financieres CT</field>
+        <field name="sequence">230</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_230" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_230_emp_ct"/>
+        <field name="name">-bale[519%]</field>
+    </record>
+
+    <record id="kpi_bp_240_emp_lt" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">emp_lt</field>
+        <field name="description">Emprunts et dettes financieres LT</field>
+        <field name="sequence">240</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_240" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_240_emp_lt"/>
+        <field name="name">-bale[16%] - bale[17%]</field>
+    </record>
+
+    <record id="kpi_bp_250_prov_pca" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">prov_pca</field>
+        <field name="description">Provisions et produits constates d avance</field>
+        <field name="sequence">250</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_250" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_250_prov_pca"/>
+        <field name="name">-bale[15%] - bale[487%]</field>
+    </record>
+
+    <!-- TOTAL PASSIFS NON COURANTS -->
+    <record id="kpi_bp_260_total_pnc" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">total_pnc</field>
+        <field name="description">TOTAL PASSIFS NON COURANTS</field>
+        <field name="sequence">260</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_result"/>
+    </record>
+    <record id="kpi_expr_bp_260" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_260_total_pnc"/>
+        <field name="name">prod_diff + imp_diff_pas + emp_ct + emp_lt + prov_pca</field>
+    </record>
+
+    <!-- ============================================ -->
+    <!-- SECTION : PASSIFS COURANTS                   -->
+    <!-- ============================================ -->
+
+    <record id="kpi_bp_300_section_pc" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">section_pc</field>
+        <field name="description">PASSIFS COURANTS</field>
+        <field name="sequence">300</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_bp_300" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_300_section_pc"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <record id="kpi_bp_310_presta_serv_pc" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">presta_serv_pc</field>
+        <field name="description">Prestations de service EN COURS</field>
+        <field name="sequence">310</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_310" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_310_presta_serv_pc"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <record id="kpi_bp_320_four_compt" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">four_compt</field>
+        <field name="description">Fournisseurs et comptes rattaches</field>
+        <field name="sequence">320</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_320" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_320_four_compt"/>
+        <field name="name">-bale[401%] - bale[403%] - bale[408%]</field>
+    </record>
+
+    <record id="kpi_bp_330_treso_dec" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">treso_dec</field>
+        <field name="description">Tresorerie (Decouvert)</field>
+        <field name="sequence">330</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_330" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_330_treso_dec"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <record id="kpi_bp_340_dec_banc" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">dec_banc</field>
+        <field name="description">Comptes de tresorerie (decouverts bancaires)</field>
+        <field name="sequence">340</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_340" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_340_dec_banc"/>
+        <field name="name">nbal[512%] + nbal[514%]</field>
+    </record>
+
+    <record id="kpi_bp_350_dettes_ct_asm" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">dettes_ct_asm</field>
+        <field name="description">Dettes a court terme - ASM</field>
+        <field name="sequence">350</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_350" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_350_dettes_ct_asm"/>
+        <field name="name">-bale[5198%]</field>
+    </record>
+
+    <record id="kpi_bp_360_clients_av" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">clients_av</field>
+        <field name="description">Clients avances</field>
+        <field name="sequence">360</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_360" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_360_clients_av"/>
+        <field name="name">-bale[419%]</field>
+    </record>
+
+    <record id="kpi_bp_370_pers_payer" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">pers_payer</field>
+        <field name="description">Personnel a payer</field>
+        <field name="sequence">370</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_370" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_370_pers_payer"/>
+        <field name="name">-bale[421%] - bale[422%] - bale[427%] - bale[431%] - bale[432%] - bale[433%]</field>
+    </record>
+
+    <record id="kpi_bp_380_etat_payer" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">etat_payer</field>
+        <field name="description">Etat Autres a Payer</field>
+        <field name="sequence">380</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_380" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_380_etat_payer"/>
+        <field name="name">nbal[44%]</field>
+    </record>
+
+    <record id="kpi_bp_390_cc_assoc" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">cc_assoc</field>
+        <field name="description">Compte Courant des Associes</field>
+        <field name="sequence">390</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_390" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_390_cc_assoc"/>
+        <field name="name">-bale[455%]</field>
+    </record>
+
+    <record id="kpi_bp_400_ir_exo" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">ir_exo</field>
+        <field name="description">IR de l EXERCICE</field>
+        <field name="sequence">400</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_400" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_400_ir_exo"/>
+        <field name="name">-bale[444%]</field>
+    </record>
+
+    <record id="kpi_bp_410_prov_pc" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">prov_pc</field>
+        <field name="description">Provisions passif courant</field>
+        <field name="sequence">410</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_410" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_410_prov_pc"/>
+        <field name="name">-bale[481%]</field>
+    </record>
+
+    <record id="kpi_bp_420_credit_div" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">credit_div</field>
+        <field name="description">Crediteurs divers</field>
+        <field name="sequence">420</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_420" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_420_credit_div"/>
+        <field name="name">nbal[467%] + nbal[468%]</field>
+    </record>
+
+    <record id="kpi_bp_430_cpt_attente_pc" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">cpt_attente_pc</field>
+        <field name="description">Compte d attente a regulariser</field>
+        <field name="sequence">430</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_430" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_430_cpt_attente_pc"/>
+        <field name="name">nbal[471%]</field>
+    </record>
+
+    <record id="kpi_bp_440_etats_ch_payer" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">etats_ch_payer</field>
+        <field name="description">Etats : Charges a payer</field>
+        <field name="sequence">440</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_bp_440" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_440_etats_ch_payer"/>
+        <field name="name">-bale[4486%]</field>
+    </record>
+
+    <!-- TOTAL PASSIFS COURANTS -->
+    <record id="kpi_bp_500_total_pc" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">total_pc</field>
+        <field name="description">TOTAL PASSIFS COURANTS</field>
+        <field name="sequence">500</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_result"/>
+    </record>
+    <record id="kpi_expr_bp_500" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_500_total_pc"/>
+        <field name="name">four_compt + dec_banc + dettes_ct_asm + clients_av + pers_payer + etat_payer + cc_assoc + ir_exo + prov_pc + credit_div + cpt_attente_pc + etats_ch_payer</field>
+    </record>
+
+    <!-- TOTAL DES PASSIFS -->
+    <record id="kpi_bp_999_total_passifs" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_bilan_passif"/>
+        <field name="name">total_passifs</field>
+        <field name="description">TOTAL DES PASSIFS</field>
+        <field name="sequence">999</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_final"/>
+    </record>
+    <record id="kpi_expr_bp_999" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_bp_999_total_passifs"/>
+        <field name="name">total_cp + total_pnc + total_pc</field>
+    </record>
+
+</odoo>
