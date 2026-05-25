@@ -2,6 +2,42 @@
 
 All notable changes to this module will be documented in this file.
 
+## [18.0.10.0.0] - 2026-05-25
+
+### Added - Phase B7 : Template Declaration TVA Madagascar
+
+- **7eme template mis_builder** : `DECLARATION TVA MADAGASCAR` structuree en
+  4 sections officielles :
+  - **A. CHIFFRE D AFFAIRES HT** : Ventes taxables 20%, Exports 0%, Exoneres
+  - **B. TVA COLLECTEE** (a reverser) : sur ventes 20% + autres prestations
+  - **C. TVA DEDUCTIBLE** : biens & services 20% + immobilisations 20% +
+    credit TVA reportable exercice precedent
+  - **D. CALCUL TVA A DECAISSER** : B - C (positif = a decaisser, negatif =
+    credit TVA reportable)
+- **Instance pre-configuree** avec 2 periodes mensuelles dynamiques :
+  - Mois courant (offset 0, type m, duration 1)
+  - Mois precedent (offset -1, type m, duration 1)
+- **Mapping comptes** SOPROMER PCG Mada verifies sur SOPROMER-REST220526 :
+  - CA HT : 70710-70840 (marchandises, produits transformes, prestations)
+  - TVA collectee : 44571* (generique + 20% ventes), 44572*-44576*
+  - TVA deductible biens/services : 44561*, 44562100, 44563*, 44564*, 44566*
+  - TVA deductible immo : 44562000, 44564100, 44565*
+  - Credit TVA report : 44550*, 44552*, 44567*
+- **14 KPIs** au total : 4 sous-totaux sections + 7 details + 3 rappels
+  section D + 1 resultat final (en style `SFS_CR_Final` fond orange).
+
+### Notes
+
+- Module `softeam_l10n_mg` installe au prealable apporte le plan de comptes
+  FRANCAIS (country FR id=75) et non un plan Madagascar. Les `tax_tags`
+  format `A1-F9` (typologie declaration TVA FR) ne sont PAS exploites :
+  filtre uniquement par codes comptes 44* PCG Mada deja en place dans
+  SOPROMER (bascule TVA realisee 29/04, projet_bascule_tva_43).
+- Sections `ca_export` et `ca_exonere` placeholders a 0 : pas de compte 707
+  dedie identifie permettant distinction automatique export vs taxable.
+  Pour exploitation : creer comptes 70710E (export), 70710X (exonere) ou
+  utiliser modules complementaires l10n_mg.
+
 ## [18.0.4.0.0] - 2026-05-25
 
 ### Changed - Vague 1 : Periodes dynamiques + sous-titres en haut de section

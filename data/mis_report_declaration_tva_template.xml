@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2026 SOPROMER
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
+
+     Declaration TVA Madagascar - v18.0.10.0.0 (Phase B7)
+     4 sections officielles : A. CA HT, B. TVA collectee, C. TVA deductible,
+                              D. TVA a decaisser / Credit TVA.
+
+     Comptes SOPROMER PCG Mada (verifies SOPROMER-REST220526) :
+       Ventes (CA HT)              : 70710-70840 (marchandises/produits)
+       TVA collectee 20% ventes    : 44571000 (TVA collectee generique)
+                                     44571220 (TVA COLLECTEE 20% SUR VENTE)
+                                     44572000 (TVA COLLECTEES SUR PRESTATIONS)
+       TVA deductible biens/serv   : 44561000 (TVA SUR ACHATS POUR REVENTE 20%)
+                                     44561100 (TVA A 20% SUR AUTRES ACHATS)
+                                     44562100 (TVA A 20% SUR SERVICE)
+                                     44566000 (TVA deductible autres biens services)
+       TVA deductible immo         : 44562000 (TVA deductible immobilisations)
+                                     44564100 (TVA A 20% SUR INVESTISSEMENTS)
+       Credit TVA reportable       : 44550000 / 44552000 / 44567000
+
+     Convention signes :
+       Produits (classe 7) : -balp[7%]    => positif a l'affichage
+       TVA collectee (creditrice) : -balp[44571%, 44572%]  => positif
+       TVA deductible (debitrice) :  balp[44561%, 44562%, 44566%]  => positif
+       Section D : B - C (positif = a decaisser, negatif = credit TVA)
+
+     Limitations :
+       - tax_tags Softeam (l10n_fr style A1-F9) PAS exploites
+         (l10n FR installe par erreur, structure FR pas Mada)
+         => filtre par comptes 44* uniquement (mapping PCG Mada SOPROMER)
+       - Export / Exonere : place-holders a 0 (pas de compte dedie 707
+         distinguant export vs taxable identifie automatiquement, necessite
+         analyse manuelle ou compte dedie a creer)
+-->
+<odoo noupdate="1">
+
+    <!-- ============================================ -->
+    <!-- TEMPLATE PRINCIPAL                           -->
+    <!-- ============================================ -->
+    <record id="mis_report_declaration_tva" model="mis.report">
+        <field name="name">DECLARATION TVA MADAGASCAR</field>
+        <field name="move_lines_source" ref="account.model_account_move_line"/>
+    </record>
+
+    <!-- ============================================ -->
+    <!-- SECTION A : CHIFFRE D AFFAIRES HT            -->
+    <!-- ============================================ -->
+    <record id="kpi_tva_section_a" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">section_a_ca_ht</field>
+        <field name="description">A. CHIFFRE D AFFAIRES HT :</field>
+        <field name="sequence">10</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_tva_section_a" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_section_a"/>
+        <field name="name">ca_taxable_20 + ca_export + ca_exonere</field>
+    </record>
+
+    <record id="kpi_tva_ca_taxable_20" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">ca_taxable_20</field>
+        <field name="description">Ventes taxables (TVA 20%)</field>
+        <field name="sequence">20</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tva_ca_taxable_20" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_ca_taxable_20"/>
+        <field name="name">-balp[707%] - balp[706%]</field>
+    </record>
+
+    <record id="kpi_tva_ca_export" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">ca_export</field>
+        <field name="description">Exports (TVA 0%) [a affecter manuellement]</field>
+        <field name="sequence">30</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tva_ca_export" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_ca_export"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <record id="kpi_tva_ca_exonere" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">ca_exonere</field>
+        <field name="description">Exoneres / hors champ TVA [a affecter manuellement]</field>
+        <field name="sequence">40</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tva_ca_exonere" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_ca_exonere"/>
+        <field name="name">AccountingNone</field>
+    </record>
+
+    <!-- ============================================ -->
+    <!-- SECTION B : TVA COLLECTEE                    -->
+    <!-- ============================================ -->
+    <record id="kpi_tva_section_b" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">section_b_tva_collectee</field>
+        <field name="description">B. TVA COLLECTEE (a reverser) :</field>
+        <field name="sequence">50</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_tva_section_b" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_section_b"/>
+        <field name="name">tva_coll_ventes + tva_coll_prestations</field>
+    </record>
+
+    <record id="kpi_tva_coll_ventes" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">tva_coll_ventes</field>
+        <field name="description">TVA collectee sur ventes 20% (44571*)</field>
+        <field name="sequence">60</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tva_coll_ventes" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_coll_ventes"/>
+        <field name="name">-balp[44571%]</field>
+    </record>
+
+    <record id="kpi_tva_coll_prestations" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">tva_coll_prestations</field>
+        <field name="description">TVA collectee sur prestations / autres (44572-44576)</field>
+        <field name="sequence">70</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tva_coll_prestations" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_coll_prestations"/>
+        <field name="name">-balp[44572%] - balp[44573%] - balp[44574%] - balp[44575%] - balp[44576%]</field>
+    </record>
+
+    <!-- ============================================ -->
+    <!-- SECTION C : TVA DEDUCTIBLE                   -->
+    <!-- ============================================ -->
+    <record id="kpi_tva_section_c" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">section_c_tva_deductible</field>
+        <field name="description">C. TVA DEDUCTIBLE :</field>
+        <field name="sequence">80</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_subtotal"/>
+    </record>
+    <record id="kpi_expr_tva_section_c" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_section_c"/>
+        <field name="name">tva_ded_bs + tva_ded_immo + tva_credit_reportable</field>
+    </record>
+
+    <record id="kpi_tva_ded_bs" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">tva_ded_bs</field>
+        <field name="description">TVA deductible biens &amp; services 20% (44561*, 44566*)</field>
+        <field name="sequence">90</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tva_ded_bs" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_ded_bs"/>
+        <field name="name">balp[44561%] + balp[44566%] + balp[44562100] + balp[44563%] + balp[44564%]</field>
+    </record>
+
+    <record id="kpi_tva_ded_immo" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">tva_ded_immo</field>
+        <field name="description">TVA deductible sur immobilisations 20% (44562000, 44564100)</field>
+        <field name="sequence">100</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tva_ded_immo" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_ded_immo"/>
+        <field name="name">balp[44562000] + balp[44564100] + balp[44565%]</field>
+    </record>
+
+    <record id="kpi_tva_credit_reportable" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">tva_credit_reportable</field>
+        <field name="description">Report credit TVA exercice precedent (44550, 44552, 44567)</field>
+        <field name="sequence">110</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_tva_credit_reportable" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_credit_reportable"/>
+        <field name="name">balp[44550%] + balp[44552%] + balp[44567%]</field>
+    </record>
+
+    <!-- ============================================ -->
+    <!-- SECTION D : CALCUL TVA A DECAISSER           -->
+    <!-- ============================================ -->
+    <record id="kpi_tva_section_d_collectee_rappel" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">d_rappel_collectee</field>
+        <field name="description">D. CALCUL TVA A DECAISSER --- TVA collectee (B)</field>
+        <field name="sequence">120</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_d_rappel_collectee" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_section_d_collectee_rappel"/>
+        <field name="name">section_b_tva_collectee</field>
+    </record>
+
+    <record id="kpi_tva_section_d_deductible_rappel" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">d_rappel_deductible</field>
+        <field name="description">moins TVA deductible (C)</field>
+        <field name="sequence">130</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_detail"/>
+    </record>
+    <record id="kpi_expr_d_rappel_deductible" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_section_d_deductible_rappel"/>
+        <field name="name">-section_c_tva_deductible</field>
+    </record>
+
+    <record id="kpi_tva_section_d_resultat" model="mis.report.kpi">
+        <field name="report_id" ref="mis_report_declaration_tva"/>
+        <field name="name">tva_a_decaisser</field>
+        <field name="description">= TVA A DECAISSER (+) / CREDIT TVA REPORTABLE (-)</field>
+        <field name="sequence">140</field>
+        <field name="type">num</field>
+        <field name="compare_method">pct</field>
+        <field name="accumulation_method">sum</field>
+        <field name="style_id" ref="style_cr_final"/>
+    </record>
+    <record id="kpi_expr_tva_a_decaisser" model="mis.report.kpi.expression">
+        <field name="kpi_id" ref="kpi_tva_section_d_resultat"/>
+        <field name="name">section_b_tva_collectee - section_c_tva_deductible</field>
+    </record>
+
+</odoo>

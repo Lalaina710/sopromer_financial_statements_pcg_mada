@@ -2,10 +2,10 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 {
     "name": "SOPROMER Financial Statements - PCG Madagascar 2005",
-    "version": "18.0.9.0.0",
+    "version": "18.0.10.0.0",
     "category": "Accounting/Reporting",
     "summary": "Etats financiers configurables PCG 2005 Madagascar via OCA mis_builder "
-               "(CR Nature + BILAN ACTIF/PASSIF + CR FONCTION + TFT + VARIATION CP - Vague 2 complete)",
+               "(CR Nature + BILAN ACTIF/PASSIF + CR FONCTION + TFT + VARIATION CP + DECLARATION TVA)",
     "description": """
 SOPROMER Financial Statements - PCG Madagascar 2005
 ====================================================
@@ -57,6 +57,8 @@ Dependances
         "data/mis_report_tft_indirecte_instance.xml",
         "data/mis_report_variation_cp_template.xml",
         "data/mis_report_variation_cp_instance.xml",
+        "data/mis_report_declaration_tva_template.xml",
+        "data/mis_report_declaration_tva_instance.xml",
         "reports/paper_format_mada.xml",
         "reports/mis_report_qweb_inherit.xml",
     ],
