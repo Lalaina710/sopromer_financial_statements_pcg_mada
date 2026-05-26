@@ -6,7 +6,7 @@ conformes au **Plan Comptable General 2005 Madagascar** (decret n°2004-272 du
 
 Modele de reference visuel : **MEDICAL INTERNATIONAL SARL** (Annexe I PCG 2005).
 
-- **Version** : 18.0.10.0.0
+- **Version** : 18.0.10.1.0
 - **License** : LGPL-3
 - **Auteur** : SOPROMER
 - **Repo** : https://github.com/Lalaina710/sopromer_financial_statements_pcg_mada

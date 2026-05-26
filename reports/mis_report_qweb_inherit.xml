@@ -147,6 +147,25 @@
                     font-size: 8pt;
                     color: #666666;
                 }
+
+                /* Bandeau pedagogique Bilan Passif (v18.0.10.1.0)
+                   Note d'avertissement encadree gris leger, italique,
+                   placee entre titre rapport et tableau KPI. */
+                .sfs-partial-banner {
+                    background-color: #F5F5F5;
+                    border: 1px solid #CCCCCC;
+                    border-left: 4px solid #B58900;
+                    padding: 6px 10px;
+                    margin: 6px 0 10px 0;
+                    font-size: 9pt;
+                    font-style: italic;
+                    color: #444444;
+                    line-height: 1.4;
+                }
+                .sfs-partial-banner strong {
+                    font-style: normal;
+                    color: #333333;
+                }
             </style>
         </xpath>
 
@@ -251,6 +270,29 @@
                     AU <t t-esc="o.date_to.strftime('%d/%m/%y')"/>
                 </t>
             </div>
+            <!--
+                Bandeau pedagogique Bilan Passif uniquement (v18.0.10.1.0)
+                Conditionne sur xml_id de l'instance pour ne s'afficher QUE
+                sur "BILAN PASSIF". Drill-down SQL 2026-05-26 confirme :
+                classes 1 (capitaux propres), 2 (immobilisations), 3 (stocks
+                ouverture) vides cote Odoo car balances ouverture Sage 100c
+                jamais importees. Resultat : Bilan Passif sort negatif tant
+                que migration Sage incomplete. Pas un bug du module : carence
+                data source. Bandeau informe l'utilisateur du caractere
+                partiel du rapport.
+            -->
+            <t t-if="o.get_external_id().get(o.id) == 'sopromer_financial_statements_pcg_mada.mis_report_instance_bilan_passif'">
+                <div class="sfs-partial-banner">
+                    <strong>Bilan partiel</strong> &#8212; Les classes
+                    <strong>1</strong> (Capitaux propres, Reserves, Resultat
+                    reporte), <strong>2</strong> (Immobilisations) et
+                    <strong>3</strong> (Stocks d'ouverture) sont gerees sur
+                    Sage 100c et ne sont pas importees dans Odoo. Le
+                    desequilibre apparent reflete cette carence migration.
+                    Pour un bilan complet : import balances d'ouverture Sage
+                    a venir.
+                </div>
+            </t>
         </xpath>
 
     </template>

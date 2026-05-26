@@ -2,6 +2,31 @@
 
 All notable changes to this module will be documented in this file.
 
+## [18.0.10.1.0] - 2026-05-26
+
+### Added - Bandeau pedagogique Bilan Passif
+
+- **Bandeau "Bilan partiel"** ajoute au QWeb sur le rapport BILAN PASSIF
+  uniquement (conditionne via xml_id `mis_report_instance_bilan_passif`).
+  Informe l'utilisateur que les classes 1 (capitaux propres, reserves,
+  resultat reporte), 2 (immobilisations) et 3 (stocks d'ouverture) sont
+  gerees sur Sage 100c et n'ont pas ete importees dans Odoo. Le
+  desequilibre apparent du bilan reflete cette carence migration, pas un
+  bug des KPI mis_builder.
+- **CSS** : note encadree gris leger avec bordure gauche orange (#B58900),
+  texte italique 9pt, placee entre le titre du rapport et le tableau KPI.
+
+### Notes
+
+- **Pas de modification KPI** : le drill-down SQL effectue le 2026-05-26
+  confirme que les comptes des classes 1, 2 et 3 sont vides cote Odoo
+  (et les sous-comptes 444/4486/481/455 aussi). Aucun patch des
+  expressions `nbal[]` / `-bale[]` n'est requis : vrai correctif = import
+  des balances d'ouverture Sage 100c via odoo-data ou odoo-sage-migrator.
+- Les 6 autres templates (CR Nature, Bilan Actif, CR Fonction, TFT,
+  Variation CP, Declaration TVA) ne sont pas impactes : le bandeau est
+  strictement conditionne au xml_id du Bilan Passif.
+
 ## [18.0.10.0.0] - 2026-05-25
 
 ### Added - Phase B7 : Template Declaration TVA Madagascar
